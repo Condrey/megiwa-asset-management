@@ -1,0 +1,379 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//////////////////////
+// ENUMS
+//////////////////////
+
+enum AssetType {
+  LAND
+  RESIDENTIAL
+  COMMERCIAL
+  SHOP
+  FARM
+  VEHICLE
+  MACHINERY
+}
+
+enum AssetLegalStatus {
+  CLEAN
+  DISPUTED
+  MORTGAGED
+  RESTRICTED
+  SOLD
+}
+
+enum PropertyStatus {
+  OCCUPIED
+  VACANT
+  UNDER_MAINTENANCE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  PARTIAL
+  OVERDUE
+}
+
+enum IncomeType {
+  RENT
+  BUSINESS
+  FARM
+  DIVIDEND
+  INTEREST
+  OTHER
+}
+
+enum ExpenseType {
+  MAINTENANCE
+  TAX
+  SALARY
+  UTILITY
+  LOAN
+  MEDICAL
+  EDUCATION
+  OTHER
+}
+
+enum DocumentType {
+  LAND_TITLE
+  LEASE_AGREEMENT
+  SALE_AGREEMENT
+  WILL
+  INSURANCE
+  COURT_ORDER
+  APPROVAL
+  OTHER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+//////////////////////
+// USERS & SECURITY
+//////////////////////
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  logs AuditLog[]
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  entity    String
+  entityId  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+//////////////////////
+// FAMILY TREE
+//////////////////////
+
+model FamilyMember {
+  id          String    @id @default(uuid())
+  fullName    String
+  email       String?
+  gender      Gender?
+  dateOfBirth DateTime?
+  dateOfDeath DateTime?
+  contact     String?
+  createdAt   DateTime  @default(now())
+  avatarUrl   String?
+  isDeceased  Boolean   @default(false)
+
+  fatherId String?
+  motherId String?
+
+  // Parents
+  father FamilyMember? @relation("Father", fields: [fatherId], references: [id])
+  mother FamilyMember? @relation("Mother", fields: [motherId], references: [id])
+
+  // Children (two explicit sides)
+  childrenFromFather FamilyMember[] @relation("Father")
+  childrenFromMother FamilyMember[] @relation("Mother")
+
+  // Other relations
+  ownerships               Ownership[]
+  guardianships            Guardianship[]           @relation("Ward")
+  guardiansOf              Guardianship[]           @relation("Guardian")
+  incomeDistributions      IncomeDistribution[]
+  inheritanceEvents        InheritanceEvent[]
+  inheritanceBeneficiaries InheritanceBeneficiary[]
+}
+
+//////////////////////
+// ASSETS
+//////////////////////
+
+model Asset {
+  id          String           @id @default(uuid())
+  name        String
+  type        AssetType
+  location    String
+  size        String?
+  legalStatus AssetLegalStatus @default(CLEAN)
+  createdAt   DateTime         @default(now())
+  retiredAt   DateTime?
+
+  units             Unit[]
+  documents         Document[]
+  ownerships        Ownership[]
+  valuations        Valuation[]
+  incomes           Income[]
+  expenses          Expense[]
+  legalCases        LegalCase[]
+  inheritanceEvents InheritanceEvent[]
+}
+
+model Unit {
+  id      String         @id @default(uuid())
+  assetId String
+  name    String
+  rent    Float?
+  status  PropertyStatus
+
+  asset  Asset   @relation(fields: [assetId], references: [id])
+  leases Lease[]
+}
+
+//////////////////////
+// OWNERSHIP (HISTORICAL)
+//////////////////////
+
+model Ownership {
+  id            String    @id @default(uuid())
+  assetId       String
+  memberId      String
+  share         Float
+  previousShare Float
+  startDate     DateTime
+  endDate       DateTime?
+
+  asset  Asset        @relation(fields: [assetId], references: [id])
+  member FamilyMember @relation(fields: [memberId], references: [id])
+}
+
+//////////////////////
+// TENANCY & BILLING
+//////////////////////
+
+model Tenant {
+  id        String   @id @default(uuid())
+  fullName  String
+  contact   String
+  email     String?
+  createdAt DateTime @default(now())
+
+  leases Lease[]
+}
+
+model Lease {
+  id        String    @id @default(uuid())
+  unitId    String
+  tenantId  String
+  startDate DateTime
+  endDate   DateTime?
+  rent      Float
+  createdAt DateTime  @default(now())
+
+  unit     Unit      @relation(fields: [unitId], references: [id])
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  invoices Invoice[]
+}
+
+model Invoice {
+  id      String        @id @default(uuid())
+  leaseId String
+  period  String
+  amount  Float
+  dueDate DateTime
+  status  PaymentStatus
+
+  lease    Lease     @relation(fields: [leaseId], references: [id])
+  payments Payment[]
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  invoiceId String
+  amount    Float
+  paidOn    DateTime?
+  method    String?
+  status    PaymentStatus
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+}
+
+//////////////////////
+// FINANCIALS
+//////////////////////
+
+model Income {
+  id       String     @id @default(uuid())
+  assetId  String?
+  type     IncomeType
+  amount   Float
+  currency String     @default("UGX")
+  date     DateTime   @default(now())
+
+  asset         Asset?               @relation(fields: [assetId], references: [id])
+  distributions IncomeDistribution[]
+}
+
+model IncomeDistribution {
+  id       String @id @default(uuid())
+  incomeId String
+  memberId String
+  amount   Float
+
+  income Income       @relation(fields: [incomeId], references: [id])
+  member FamilyMember @relation(fields: [memberId], references: [id])
+}
+
+model Expense {
+  id          String      @id @default(uuid())
+  assetId     String?
+  type        ExpenseType
+  amount      Float
+  currency    String      @default("UGX")
+  description String
+  date        DateTime    @default(now())
+
+  asset Asset? @relation(fields: [assetId], references: [id])
+}
+
+//////////////////////
+// VALUATION
+//////////////////////
+
+model Valuation {
+  id       String   @id @default(uuid())
+  assetId  String
+  value    Float
+  valuedOn DateTime
+
+  asset Asset @relation(fields: [assetId], references: [id])
+}
+
+//////////////////////
+// SUCCESSION EVENTS
+//////////////////////
+
+model InheritanceEvent {
+  id         String   @id @default(uuid())
+  assetId    String
+  deceasedId String
+  eventDate  DateTime
+  notes      String?
+
+  asset         Asset                    @relation(fields: [assetId], references: [id])
+  deceased      FamilyMember             @relation(fields: [deceasedId], references: [id])
+  beneficiaries InheritanceBeneficiary[]
+}
+
+model InheritanceBeneficiary {
+  id            String @id @default(uuid())
+  eventId       String
+  memberId      String
+  share         Float
+  previousShare Float
+
+  event  InheritanceEvent @relation(fields: [eventId], references: [id])
+  member FamilyMember     @relation(fields: [memberId], references: [id])
+}
+
+//////////////////////
+// GUARDIANSHIP
+//////////////////////
+
+model Guardianship {
+  id         String    @id @default(uuid())
+  wardId     String
+  guardianId String
+  startDate  DateTime
+  endDate    DateTime?
+
+  ward     FamilyMember @relation("Ward", fields: [wardId], references: [id])
+  guardian FamilyMember @relation("Guardian", fields: [guardianId], references: [id])
+}
+
+//////////////////////
+// LEGAL & GOVERNANCE
+//////////////////////
+
+model LegalCase {
+  id       String    @id @default(uuid())
+  assetId  String?
+  title    String
+  status   String
+  openedOn DateTime
+  closedOn DateTime?
+  notes    String?
+
+  asset Asset? @relation(fields: [assetId], references: [id])
+}
+
+model GovernanceRule {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  effectiveFrom DateTime
+}
+
+//////////////////////
+// DOCUMENTS
+//////////////////////
+
+model Document {
+  id        String       @id @default(uuid())
+  assetId   String?
+  type      DocumentType
+  title     String
+  fileUrl   String
+  createdAt DateTime     @default(now())
+
+  asset Asset? @relation(fields: [assetId], references: [id])
+}
