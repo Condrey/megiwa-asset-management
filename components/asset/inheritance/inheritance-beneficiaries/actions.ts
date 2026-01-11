@@ -30,11 +30,13 @@ export async function upsertInheritanceBeneficiary(
       eventId,
       memberId,
       share,
+      previousShare: share,
     },
     update: {
       eventId,
       memberId,
       share,
+      previousShare: share,
     },
     include: inheritanceBeneficiaryDataInclude,
   });
