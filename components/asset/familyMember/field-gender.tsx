@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { allGenders } from "@/lib/constants";
+import { allGenders } from "@/lib/enums";
 import { FamilyMemberSchema } from "@/lib/validations";
 import { UseFormReturn } from "react-hook-form";
 

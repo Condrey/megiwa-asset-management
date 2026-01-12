@@ -61,14 +61,34 @@ export type InheritanceEventData = Prisma.InheritanceEventGetPayload<{
   include: typeof inheritanceEventDataInclude;
 }>;
 
+// Units
+export const unitDataInclude = {
+  asset: true,
+  leases: true,
+} satisfies Prisma.UnitInclude;
+export type UnitData = Prisma.UnitGetPayload<{
+  include: typeof unitDataInclude;
+}>;
+
+// Valuations
+export const valuationDataInclude = {
+  asset: true,
+} satisfies Prisma.ValuationInclude;
+export type ValuationData = Prisma.ValuationGetPayload<{
+  include: typeof valuationDataInclude;
+}>;
+
 // Asset
 export const assetDataInclude = {
-  valuations: true,
-  units: true,
+  valuations: { include: valuationDataInclude, orderBy: { valuedOn: "desc" } },
+  units: { include: unitDataInclude, orderBy: { name: "asc" } },
   documents: true,
   expenses: true,
   incomes: true,
-  inheritanceEvents: { include: inheritanceEventDataInclude },
+  inheritanceEvents: {
+    include: inheritanceEventDataInclude,
+    orderBy: { eventDate: "desc" },
+  },
   legalCases: true,
   ownerships: {
     include: ownershipDataInclude,

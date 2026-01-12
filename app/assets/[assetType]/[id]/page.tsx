@@ -1,5 +1,5 @@
 import { getAssetById } from "@/components/asset/action";
-import { assetTypes } from "@/lib/constants";
+import { assetTypes } from "@/lib/enums";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageClient from "./page-client";

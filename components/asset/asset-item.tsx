@@ -12,7 +12,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Spinner } from "@/components/ui/spinner";
-import { assetTypes } from "@/lib/constants";
+import { assetTypes } from "@/lib/enums";
 import { Asset } from "@/lib/generated/prisma/browser";
 import { getColorsFromText } from "@/lib/utils";
 import { formatDate } from "date-fns";

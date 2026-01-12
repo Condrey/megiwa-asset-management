@@ -31,6 +31,16 @@ export function formatPercentage(n: number): string {
   }).format(n);
 }
 
+export function formatCurrency(amount: number, currency?: string): string {
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    minimumSignificantDigits: 2,
+    compactDisplay: "long",
+    style: "currency",
+    currency: currency || "Ugx",
+  }).format(amount);
+}
+
 export function getColorsFromText(text: string) {
   // deterministic hex based on name length
   const len = Math.max(1, text.length);

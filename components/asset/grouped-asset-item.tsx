@@ -10,7 +10,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Spinner } from "@/components/ui/spinner";
-import { assetTypes } from "@/lib/constants";
+import { assetTypes } from "@/lib/enums";
 import { GroupedAssetByTypeData } from "@/lib/types";
 import { getColorsFromText } from "@/lib/utils";
 import Link from "next/link";

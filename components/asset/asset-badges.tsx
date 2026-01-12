@@ -1,4 +1,4 @@
-import { assetLegalStatuses, assetTypes } from "@/lib/constants";
+import { assetLegalStatuses, assetTypes } from "@/lib/enums";
 import { AssetLegalStatus, AssetType } from "@/lib/generated/prisma/enums";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";

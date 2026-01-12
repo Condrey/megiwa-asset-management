@@ -5,11 +5,11 @@ import UnitsTab from "@/components/asset/tabs/units-tab";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssetData } from "@/lib/types";
 import DocumentsTab from "./documents-tab";
-import FinancesTab from "./finances-tab";
+import FinancesTab from "./finance/finances-tab";
 import LegalCasesTab from "./legal-cases-tab";
 import { TabsCounter } from "./tabs-counter";
 
-export default function AssetTabs({ asset }: { asset: AssetData }) {
+export default function TabsStructure({ asset }: { asset: AssetData }) {
   return (
     <Tabs defaultValue="details" className="space-y-6">
       <TabsList className="h-fit py-2 px-3 w-full md:*:h-12">

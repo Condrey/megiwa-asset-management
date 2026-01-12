@@ -2,7 +2,7 @@ import { getAssetsByType } from "@/components/asset/action";
 import AssetItem from "@/components/asset/asset-item";
 import Container from "@/components/container";
 import { TypographyH1 } from "@/components/headings";
-import { assetTypes } from "@/lib/constants";
+import { assetTypes } from "@/lib/enums";
 import { AssetType } from "@/lib/generated/prisma/enums";
 import { Metadata } from "next";
 

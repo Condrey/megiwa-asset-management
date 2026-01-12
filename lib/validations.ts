@@ -1,5 +1,5 @@
 import z from "zod";
-import { Gender } from "./generated/prisma/enums";
+import { Gender, PropertyStatus } from "./generated/prisma/enums";
 const requiredString = z.string().trim();
 
 // Family Member
@@ -98,6 +98,31 @@ export const inheritanceBeneficiarySchemaWithDefaultMax =
 export type InheritanceBeneficiarySchema = z.infer<
   typeof inheritanceBeneficiarySchemaWithDefaultMax
 >;
+
+// Unit
+export const unitSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  assetId: requiredString.min(
+    1,
+    "Please make sure an asset is chosen before assigning an owner"
+  ),
+  name: requiredString.min(1, "Please provide a name to the unit"),
+  rent: z.number({ error: "How much is the rent?" }).optional(),
+  status: z.enum(PropertyStatus, { error: "Choose a property status" }),
+});
+export type UnitSchema = z.infer<typeof unitSchema>;
+
+// Valuation
+export const valuationSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  assetId: requiredString.min(
+    1,
+    "Please make sure an asset is chosen before assigning an owner"
+  ),
+  value: z.number({ error: "Please include a value" }),
+  valuedOn: z.date({ error: "Please provide a date of value addition" }),
+});
+export type ValuationSchema = z.infer<typeof valuationSchema>;
 
 // miscellaneous
 export const emailSchema = z.object({ email: z.string().trim().email() });
