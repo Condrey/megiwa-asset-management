@@ -4,6 +4,25 @@ import {
   PickEnumerable,
 } from "./generated/prisma/internal/prismaNamespace";
 
+// User
+export const userDataSelect = {
+  id: true,
+  avatarUrl: true,
+  email: true,
+  name: true,
+  role: true,
+  username: true,
+} satisfies Prisma.UserSelect;
+export type UserDataSelect = Prisma.UserGetPayload<{
+  select: typeof userDataSelect;
+}>;
+export const userDataInclude = {
+  logs: true,
+} satisfies Prisma.UserInclude;
+export type UserData = Prisma.UserGetPayload<{
+  include: typeof userDataInclude;
+}>;
+
 // Family Member
 export const familyMemberDataInclude = {
   father: true,

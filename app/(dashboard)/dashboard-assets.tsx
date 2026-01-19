@@ -1,6 +1,6 @@
 "use client";
 
-import AssetItem from "@/components/asset/asset-item";
+import AssetItem from "@/components/application/asset/asset-item";
 import { TypographyH2 } from "@/components/headings";
 import { Button } from "@/components/ui/button";
 import { Asset } from "@/lib/generated/prisma/browser";

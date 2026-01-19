@@ -3,6 +3,7 @@ import {
   AssetType,
   Gender,
   PropertyStatus,
+  Role,
 } from "@/lib/generated/prisma/enums";
 import {
   ArchiveRestoreIcon,
@@ -22,6 +23,7 @@ import {
   WrenchIcon,
 } from "lucide-react";
 
+export const allAssetTypes = Object.values(AssetType);
 export const assetTypes: Record<
   AssetType,
   { title: string; icon: LucideIcon }
@@ -129,5 +131,60 @@ export const propertyStatuses: Record<
     title: "Under Maintenance",
     variant: "warning",
     icon: WrenchIcon,
+  },
+};
+
+export const allRoles = Object.values(Role);
+export const roles: Record<Role, { title: string }> = {
+  SUPER_ADMIN: {
+    title: "Super admin",
+  },
+  FAMILY_HEAD: {
+    title: "Family head",
+  },
+  TRUSTEE: {
+    title: "Trustee",
+  },
+  ASSET_MANAGER: {
+    title: "Asset manager",
+  },
+  FINANCE_MANAGER: {
+    title: "Finance manager",
+  },
+  PROPERTY_MANAGER: {
+    title: "Property manager",
+  },
+  BENEFICIARY: {
+    title: "Beneficiary",
+  },
+  FAMILY_MEMBER: {
+    title: "Family member",
+  },
+  HEIR: {
+    title: "Heir",
+  },
+  LEGAL_ADVISOR: {
+    title: "Legal advisor",
+  },
+  ACCOUNTANT: {
+    title: "Accountant",
+  },
+  AUDITOR: {
+    title: "Auditor",
+  },
+  VALUER: {
+    title: "Valuer",
+  },
+  STAFF: {
+    title: "Staff",
+  },
+  VIEWER: {
+    title: "Viewer",
+  },
+  GUEST: {
+    title: "Guest",
+  },
+  OTHER: {
+    title: "Other",
   },
 };

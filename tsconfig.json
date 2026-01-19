@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "components/asset/ownership/field-date-end.tsx"  ],
+, "components/application/asset/ownership/field-date-end.tsx"  ],
   "exclude": ["node_modules"]
 }

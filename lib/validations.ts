@@ -1,6 +1,54 @@
 import z from "zod";
-import { Gender, PropertyStatus } from "./generated/prisma/enums";
+import { Gender, PropertyStatus, Role } from "./generated/prisma/enums";
 const requiredString = z.string().trim();
+
+// Signup
+export const signUpSchema = z.object({
+  email: z
+    .email()
+    .min(1, "Please an email is required")
+    .describe("Email for signing up"),
+  name: requiredString.min(1, "Please provide a name"),
+  username: requiredString
+    .min(1, "You need a username")
+    .describe("User username for the user.")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Only letters, numbers, - and _ are allowed"),
+  password: requiredString
+    .min(8, "Password must be at least 8 characters")
+    .describe("Password for the user."),
+  role: z.enum(Role, { error: "Please choose a correct role." }),
+});
+export type SignUpSchema = z.infer<typeof signUpSchema>;
+
+// Login
+export const loginSchema = z.object({
+  username: requiredString.min(
+    1,
+    "Please input your username or email that you registered with."
+  ),
+  password: requiredString
+    .min(1, "Password is required to login")
+    .describe("Password that you registered with."),
+});
+export type LoginSchema = z.infer<typeof loginSchema>;
+
+export const verifyUserSchema = z.object({
+  name: requiredString
+    .min(1, "Name must be provided.")
+    .transform((val) =>
+      val.trim().replace(/\b\w/g, (char) => char.toUpperCase())
+    ),
+  id: requiredString.min(1, "User id is missing"),
+  username: requiredString
+    .min(1, "Please add a user name")
+    .describe("User username for the user.")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Only letters, numbers, - and _ are allowed"),
+  email: requiredString.email().min(1, "A working email is required"),
+  password: requiredString
+    .min(8, "Password must be at least 8 characters")
+    .describe("Password for the user."),
+});
+export type VerifyUserSchema = z.infer<typeof verifyUserSchema>;
 
 // Family Member
 export const familyMemberSchema = z.object({

@@ -56,3 +56,13 @@ export function getColorsFromText(text: string) {
 
   return { color1, color2, linear_gradient };
 }
+
+export const webName = `Megiwa Asset Management`;
+export const organization = "Ocira James Estates";
+export const siteConfig = {
+  name: webName,
+  url: process.env.NEXT_PUBLIC_BASE_URL,
+  logo: "/logo.png",
+  defaultCoverImage: "/web-app-manifest-512x512.png",
+  description: `Official site to manage properties of our Father Mr. James Ocira.`,
+};
