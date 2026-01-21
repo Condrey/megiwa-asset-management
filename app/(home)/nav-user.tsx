@@ -25,7 +25,6 @@ import { REDIRECT_TO_URL_SEARCH_PARAMS } from "@/lib/constants";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
 import { useSession } from "../(auth)/auth/session-provider";
 import UserAvatar from "../(auth)/auth/user-avatar";
 
@@ -34,11 +33,13 @@ export function NavUser() {
   const { setTheme } = useTheme();
 
   const { user } = useSession();
-  const [isPending, startTransition] = useTransition();
   const currentPathname = usePathname();
   const searchParams = useSearchParams();
   const newParams = new URLSearchParams(searchParams.toString());
-  newParams.set(REDIRECT_TO_URL_SEARCH_PARAMS, currentPathname);
+  newParams.set(
+    REDIRECT_TO_URL_SEARCH_PARAMS,
+    currentPathname + "?" + newParams.toString(),
+  );
   const loginUrl = `/login` + "?" + newParams.toString();
 
   return (
@@ -116,12 +117,12 @@ export function NavUser() {
                 </DropdownMenuPortal>
               </DropdownMenuSub>
               {/* logging out  */}
-
+              <DropdownMenuSeparator />
               <LogoutButton
                 variant={"ghost"}
-                className="flex justify-start ps-3 w-full"
+                className="flex justify-start  w-full"
               >
-                <LogOutIcon className="mr-2 text-inherit" />
+                <LogOutIcon className="mr-3 text-inherit inline-flex" />
                 Sign out
               </LogoutButton>
             </DropdownMenuContent>

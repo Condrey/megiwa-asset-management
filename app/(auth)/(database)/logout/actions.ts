@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { validateRequest } from "../../auth/auth";
 import { globalPOSTRateLimit } from "../../lib/request";
 import { invalidateSession } from "../../lib/session";
-import { deleteSessionTokenCookie } from "../../lib/tokens";
 
 export async function logout(redirectUrl?: string) {
   if (!globalPOSTRateLimit()) {
@@ -16,8 +15,7 @@ export async function logout(redirectUrl?: string) {
     throw new Error("Unauthorized.");
   }
 
-  invalidateSession(session.id);
-  deleteSessionTokenCookie();
+  await invalidateSession(session.id);
   if (!redirectUrl || !redirectUrl.startsWith("/")) {
     redirectUrl = "/";
   }

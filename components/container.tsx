@@ -15,17 +15,23 @@ export default function Container({
   ...props
 }: Props) {
   return (
-    <div
-      className={cn("max-w-7xl py-12 space-y-6 mx-auto", className)}
-      {...props}
-    >
+    <div className="size-full ">
       {!!breadcrumbs && (
         <ResponsiveBreadcrumb
           items={breadcrumbs}
           ITEMS_TO_DISPLAY={ITEMS_TO_DISPLAY}
+          className="sticky top-0 bg-background "
         />
       )}
-      {children}
+      <div
+        className={cn(
+          "max-w-9xl w-full px-3 py-12 space-y-6 mx-auto",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
     </div>
   );
 }

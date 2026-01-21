@@ -1,61 +1,24 @@
+import { Role } from "@/lib/generated/prisma/client";
 import prisma from "@/lib/prisma";
+import { addMilliseconds } from "date-fns";
 import { cookies } from "next/headers";
-import { validateSessionToken } from "./tokens";
+import {
+  INACTIVITY_TIMEOUT_MILLISECONDS,
+  SESSION_EXPIRY_MILLISECONDS,
+  TOKEN_COOKIE_SESSION_NAME,
+} from "./constants";
+import { deleteSessionTokenCookie, validateSessionToken } from "./tokens";
+import {
+  LuciaSessionWithToken,
+  SessionValidationResult,
+  SessionWithUserData,
+  sessionWithUserInclude,
+} from "./types";
 import { hashSecret } from "./utils";
-import { Prisma, Role, Session } from "@/lib/generated/prisma/client";
-
-const inactivityTimeoutSeconds = 1000 * 60 * 60; // 1 hour
-export const sessionExpiryDate = 1000 * 60 * 60 * 24 * 30; //30 days
-
-const sessionWithUserInclude = {
-  user: {
-    select: {
-      id: true,
-      role: true,
-      avatarUrl: true,
-      email: true,
-      username: true,
-      name: true,
-    },
-  },
-} satisfies Prisma.SessionInclude;
-type SessionWithUserData = Prisma.SessionGetPayload<{
-  include: typeof sessionWithUserInclude;
-}>;
-
-export type LuciaSession = {
-  id: string;
-  lastVerifiedAt: Date;
-  expiresAt: Date;
-  createdAt: Date;
-  userId: string;
-  role: Role;
-  // bio: string | null;
-  // username: string | null;
-  // telephone: string | null;
-  // name: string;
-};
-export type LuciaUser = {
-  role: Role;
-  avatarUrl: string | null;
-  email: string | null;
-  id: string;
-  username: string | null;
-  isVerified: boolean;
-  name: string;
-  bio: string | null;
-  telephone: string | null;
-};
-interface LuciaSessionWithToken extends Session {
-  token: string;
-}
-export type SessionValidationResult =
-  | { session: LuciaSession; user: LuciaUser }
-  | { session: null; user: null };
 
 export async function getCurrentSession(): Promise<SessionValidationResult> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("oauth_session")?.value ?? null;
+  const token = cookieStore.get(TOKEN_COOKIE_SESSION_NAME)?.value ?? null;
   if (!token) {
     return { session: null, user: null };
   }
@@ -65,7 +28,10 @@ export async function getCurrentSession(): Promise<SessionValidationResult> {
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
-  await prisma.session.delete({ where: { id: sessionId } });
+  await Promise.all([
+    await prisma.session.delete({ where: { id: sessionId } }),
+    await deleteSessionTokenCookie(),
+  ]);
 }
 // To log out user from all devices remotely
 export async function invalidateUserSessions(userId: string): Promise<void> {
@@ -81,7 +47,7 @@ export async function createSession(
   const id = tokenParts[0];
   const secret = tokenParts[1];
   const secretHash = await hashSecret(secret);
-  const expiresAt = new Date(Date.now() + sessionExpiryDate);
+  const expiresAt = addMilliseconds(now, SESSION_EXPIRY_MILLISECONDS);
 
   const dbSession = await prisma.$transaction(
     async (tx) => {
@@ -128,8 +94,14 @@ export async function getSessionById(
   // then go ahead and delete their session from the browser.
   if (
     now.getTime() - session.lastVerifiedAt.getTime() >=
-    inactivityTimeoutSeconds
+    INACTIVITY_TIMEOUT_MILLISECONDS
   ) {
+    console.info(`Session ${sessionId} expired due to inactivity.`);
+    await deleteSessionById(sessionId);
+    return null;
+  }
+  if (now.getTime() >= session.expiresAt.getTime()) {
+    console.info(`Session ${sessionId} has expired.`);
     await deleteSessionById(sessionId);
     return null;
   }
@@ -137,9 +109,12 @@ export async function getSessionById(
 }
 
 export async function deleteSessionById(sessionId: string): Promise<void> {
-  await prisma.session.delete({
-    where: {
-      id: sessionId,
-    },
-  });
+  await Promise.all([
+    await prisma.session.delete({
+      where: {
+        id: sessionId,
+      },
+    }),
+    await deleteSessionTokenCookie(),
+  ]);
 }

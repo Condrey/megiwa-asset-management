@@ -31,20 +31,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BreadcrumbItem as BreadcrumbType } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { ChevronRightIcon } from "lucide-react";
+import { SidebarTrigger } from "./ui/sidebar";
 
-interface Props {
+interface Props extends React.ComponentProps<"div"> {
   items: BreadcrumbType[];
   ITEMS_TO_DISPLAY?: number;
 }
 
-export function ResponsiveBreadcrumb({ items, ITEMS_TO_DISPLAY = 3 }: Props) {
+export function ResponsiveBreadcrumb({
+  items,
+  ITEMS_TO_DISPLAY = 3,
+  className,
+  ...props
+}: Props) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = !useIsMobile();
 
   return (
-    <Breadcrumb className="bg-muted py-2 px-3 rounded-md">
+    <Breadcrumb
+      className={cn("bg-muted py-2 px-3 rounded-md", className)}
+      {...props}
+    >
       <BreadcrumbList>
+        <SidebarTrigger className="flex-inline size-8 mr-10   " />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link href={items[0].href ?? "/"}>{items[0].title}</Link>

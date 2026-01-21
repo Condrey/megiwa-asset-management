@@ -38,13 +38,10 @@ export default function PageClient({
     >
       <div className="flex gap-3">
         <AssetLegalStatusBadge
-          className="[&>svg]:size-auto text-lg"
+          className="[&>svg]:size-5 text-sm flex-wrap py-0"
           legalStatus={legalStatus}
         />
-        <TypographyH1
-          text={`${name.toUpperCase()}: ${assetTitle}`}
-          className="line-clamp-2"
-        />
+        <TypographyH1 text={name} className="line-clamp-2" />
       </div>
       {status === "error" ? (
         <ErrorContainer

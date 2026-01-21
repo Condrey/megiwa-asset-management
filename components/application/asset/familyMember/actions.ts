@@ -1,9 +1,13 @@
 "use server";
 
+import { DEFAULT_PASSWORD } from "@/lib/constants";
+import { Role } from "@/lib/generated/prisma/enums";
 import prisma from "@/lib/prisma";
 import { familyMemberDataInclude } from "@/lib/types";
+import { slugify } from "@/lib/utils";
 import { familyMemberSchema, FamilyMemberSchema } from "@/lib/validations";
 import { cache } from "react";
+import { upsertManager } from "../../management/action";
 
 async function allFamilyMembers() {
   return await prisma.familyMember.findMany({
@@ -19,7 +23,7 @@ async function allFamilyMembersOwningAsset(assetId: string) {
   });
 }
 export const getAllFamilyMembersOwningAsset = cache(
-  allFamilyMembersOwningAsset
+  allFamilyMembersOwningAsset,
 );
 
 export async function upsertFamilyMember(input: FamilyMemberSchema) {
@@ -46,6 +50,13 @@ export async function upsertFamilyMember(input: FamilyMemberSchema) {
           data: { share: 0 },
         });
       }
+      await upsertManager({
+        email: email!,
+        name: fullName,
+        password: DEFAULT_PASSWORD,
+        role: Role.FAMILY_MEMBER,
+        username: slugify(fullName + "-" + contact),
+      });
       return await tx.familyMember.upsert({
         where: { id },
         create: {
@@ -73,6 +84,6 @@ export async function upsertFamilyMember(input: FamilyMemberSchema) {
         include: familyMemberDataInclude,
       });
     },
-    { maxWait: 18000, timeout: 18000 }
+    { maxWait: 18000, timeout: 18000 },
   );
 }

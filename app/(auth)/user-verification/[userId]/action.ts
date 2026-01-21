@@ -1,5 +1,6 @@
 "use server";
 
+import { REDIRECT_TO_URL_SEARCH_PARAMS } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { verifyUserSchema, VerifyUserSchema } from "@/lib/validations";
 import { hash } from "@node-rs/argon2";
@@ -7,9 +8,13 @@ import { redirect } from "next/navigation";
 import { generateEmailVerificationToken } from "../../email-verification/[token]/token";
 import { sendEmailVerificationLink } from "./email";
 
-export async function verifyUser(
-  input: VerifyUserSchema
-): Promise<{ error: string }> {
+export async function verifyUser({
+  input,
+  loginRedirectUrl,
+}: {
+  input: VerifyUserSchema;
+  loginRedirectUrl: string;
+}): Promise<{ error: string }> {
   console.log("verifying user starts");
   const { email, id, name, username, password } = verifyUserSchema.parse(input);
   try {
@@ -22,8 +27,11 @@ export async function verifyUser(
 
     const error = await prisma.$transaction(
       async (tx) => {
-        const thisUser = await tx.user.findUnique({ where: { id } });
-        const userWithUsername = await tx.user.findFirst({
+        const dbUser = await tx.user.findUnique({ where: { id } });
+        if (!dbUser) {
+          return { error: "User does not exist." };
+        }
+        const userWithSameUsername = await tx.user.findFirst({
           where: {
             username: {
               equals: username,
@@ -31,13 +39,13 @@ export async function verifyUser(
             },
           },
         });
-        if (!!userWithUsername && thisUser?.username !== username) {
+        if (userWithSameUsername && dbUser.username !== username) {
           return { error: "User name exists." };
         }
         const userWithEmail = await tx.user.findFirst({
           where: { email: { equals: email, mode: "insensitive" } },
         });
-        if (!!userWithEmail && thisUser?.email !== email) {
+        if (!!userWithEmail && dbUser.email !== email) {
           return { error: "Email already exists." };
         }
 
@@ -47,20 +55,24 @@ export async function verifyUser(
             email,
             name,
             username,
-            passwordHash: !!password ? passwordHash : {},
+            passwordHash,
           },
         });
       },
-      { maxWait: 60000, timeout: 60000 }
+      { maxWait: 60000, timeout: 60000 },
     );
     console.log("error", error);
-    if (!!error) return error;
-    console.log("Already returned error: ", error);
+    if (!!error) {
+      console.error("error", error);
+      return error;
+    }
 
     const token = await generateEmailVerificationToken(id);
-    await sendEmailVerificationLink({ email, token });
+    await sendEmailVerificationLink({ email, token, loginRedirectUrl });
   } catch (error) {
     console.error("User verification Error: ", error);
   }
-  redirect(`/email-verification/token-${email}`);
+  redirect(
+    `/email-verification/token-${email}?${REDIRECT_TO_URL_SEARCH_PARAMS}=${encodeURIComponent(loginRedirectUrl)}`,
+  );
 }

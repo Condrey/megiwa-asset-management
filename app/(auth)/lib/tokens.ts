@@ -1,21 +1,19 @@
 import prisma from "@/lib/prisma";
+import { addMilliseconds } from "date-fns";
 import { cookies } from "next/headers";
 import {
-  deleteSessionById,
-  getSessionById,
-  LuciaSession,
-  LuciaUser,
-  sessionExpiryDate,
-  SessionValidationResult,
-} from "./session";
+  ACTIVITY_CHECK_INTERVAL_MILLISECONDS,
+  SESSION_EXPIRY_MILLISECONDS,
+  TOKEN_COOKIE_SESSION_NAME,
+} from "./constants";
+import { deleteSessionById, getSessionById } from "./session";
+import { LuciaSession, LuciaUser, SessionValidationResult } from "./types";
 import {
   constantTimeEqual,
   generateSecureRandomString,
   hashSecret,
   stringToUint8Array,
 } from "./utils";
-
-const activityCheckIntervalSeconds = 1000 * 60 * 60 * 3; // 3 hours
 
 export function generateSessionToken(): string {
   const id = generateSecureRandomString();
@@ -53,7 +51,8 @@ export async function validateSessionToken(
     return { session: null, user: null };
   }
 
-  if (Date.now() >= session.expiresAt.getTime()) {
+  if (now.getTime() >= session.expiresAt.getTime()) {
+    console.info(`Session ${sessionId} has expired.`);
     await deleteSessionById(sessionId);
     return { session: null, user: null };
   }
@@ -62,9 +61,10 @@ export async function validateSessionToken(
   // “If it’s been more than 3 hours since we last saw this session active, mark it as active again and save that time in the database.”
   if (
     now.getTime() - session.lastVerifiedAt.getTime() >=
-    activityCheckIntervalSeconds
+    ACTIVITY_CHECK_INTERVAL_MILLISECONDS
   ) {
     session.lastVerifiedAt = now;
+    console.log(`Updating lastVerifiedAt for session ${sessionId} to now.`);
     await prisma.session.update({
       where: {
         id: session.id,
@@ -76,27 +76,41 @@ export async function validateSessionToken(
   }
   // rolling session expiration:
   // If the session is going to expire within 15 days, it’s time to extend its lifetime to 30 days so as to keep active users logged in.
-  if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
-    session.expiresAt = new Date(Date.now() + sessionExpiryDate); // To expire in 30 days
+  if (
+    now.getTime() >=
+    session.expiresAt.getTime() - SESSION_EXPIRY_MILLISECONDS
+  ) {
+    console.log(`Session ${sessionId} is about to expire, extending it.`);
+    session.expiresAt = addMilliseconds(now, SESSION_EXPIRY_MILLISECONDS); // To expire in 30 days
+    session.lastVerifiedAt = now;
+    console.log(
+      `Extending session ${sessionId} expiry to ${session.expiresAt}`,
+    );
     await prisma.session.update({
       where: { id: sessionId },
-      data: { expiresAt: session.expiresAt },
+      data: { expiresAt: session.expiresAt, lastVerifiedAt: now },
     });
   }
+  console.log(`Session ${sessionId} validated successfully.`);
   return {
     session: session satisfies LuciaSession,
-    user: session.user as LuciaUser,
+    user: {
+      ...session.user,
+      isVerified: session.user.isVerified ?? false,
+    } satisfies LuciaUser,
   };
 }
 
 export async function deleteSessionTokenCookie(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.set("oauth_session", "", {
+  cookieStore.set(TOKEN_COOKIE_SESSION_NAME, "", {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 0, // Set to 0 to delete the cookie
+    name: TOKEN_COOKIE_SESSION_NAME,
+    value: "",
   });
 }
 
@@ -105,11 +119,14 @@ export async function setSessionTokenCookie(
   expiresAt: Date,
 ): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.set("oauth_session", token, {
+  cookieStore.set(TOKEN_COOKIE_SESSION_NAME, token, {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     expires: expiresAt,
+    name: TOKEN_COOKIE_SESSION_NAME,
+    value: token,
+    priority: "high",
   });
 }

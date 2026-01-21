@@ -1,6 +1,7 @@
 "use client";
+
 import { createContext, useContext } from "react";
-import { LuciaSession, LuciaUser } from "./session";
+import { LuciaSession, LuciaUser } from "../lib/types";
 
 type SessionContext =
   | { user: LuciaUser; session: LuciaSession | null }

@@ -11,9 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/ui/loading-button";
 import { PasswordInput } from "@/components/ui/password-input";
+import { REDIRECT_TO_URL_SEARCH_PARAMS } from "@/lib/constants";
 import { User } from "@/lib/generated/prisma/client";
 import { verifyUserSchema, VerifyUserSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { verifyUser } from "./action";
@@ -22,6 +24,10 @@ interface VerificationFormProps {
   user: User;
 }
 export default function VerificationForm({ user }: VerificationFormProps) {
+  const searchParams = useSearchParams();
+  const loginRedirectUrl =
+    searchParams.get(REDIRECT_TO_URL_SEARCH_PARAMS) || "/";
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
   const form = useForm<VerifyUserSchema>({
@@ -37,11 +43,11 @@ export default function VerificationForm({ user }: VerificationFormProps) {
 
   async function onSubmit(input: VerifyUserSchema) {
     setError(undefined);
-    const error = await verifyUser(input);
 
-    startTransition(() => {
+    startTransition(async () => {
+      const { error } = await verifyUser({ input, loginRedirectUrl });
       if (error) {
-        setError(error.error);
+        setError(error);
       }
     });
   }
@@ -91,6 +97,7 @@ export default function VerificationForm({ user }: VerificationFormProps) {
                   {...field}
                   placeholder="Please enter an email ..."
                   type="email"
+                  disabled
                 />
               </FormControl>
               <FormMessage />
@@ -114,7 +121,7 @@ export default function VerificationForm({ user }: VerificationFormProps) {
             </FormItem>
           )}
         />
-        <LoadingButton className="w-full" loading={form.formState.isSubmitting}>
+        <LoadingButton className="w-full" loading={isPending} type="submit">
           Continue
         </LoadingButton>
       </form>

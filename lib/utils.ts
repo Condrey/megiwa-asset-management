@@ -66,3 +66,14 @@ export const siteConfig = {
   defaultCoverImage: "/web-app-manifest-512x512.png",
   description: `Official site to manage properties of our Father Mr. James Ocira.`,
 };
+
+export function slugify(input: string | undefined): string {
+  return input
+    ? input
+        .toLowerCase() // Convert to lowercase
+        .trim() // Remove leading and trailing whitespace
+        .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+        .replace(/\s+/g, "-") // Replace spaces with hyphens
+        .replace(/-+/g, "-") // Remove multiple consecutive hyphens
+    : "";
+}

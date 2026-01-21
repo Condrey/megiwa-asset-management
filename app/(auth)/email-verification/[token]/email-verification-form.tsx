@@ -19,11 +19,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/ui/loading-button";
+import { REDIRECT_TO_URL_SEARCH_PARAMS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { emailSchema, EmailSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -34,6 +36,10 @@ import {
 } from "./action";
 
 export default function EmailVerificationForm({ email }: { email: string }) {
+  const searchParams = useSearchParams();
+  const loginRedirectUrl =
+    searchParams.get(REDIRECT_TO_URL_SEARCH_PARAMS) || "/";
+
   const [error, setError] = useState<string>();
   const form = useForm<EmailSchema>({
     resolver: zodResolver(emailSchema),
@@ -46,16 +52,18 @@ export default function EmailVerificationForm({ email }: { email: string }) {
   });
 
   if (data) {
-    sendWelcomingRemarks(email);
+    sendWelcomingRemarks(email, loginRedirectUrl);
   }
   async function handleEmailResend(input: EmailSchema) {
-    const { error } = await resendEmailVerificationLink(input.email);
+    const { error } = await resendEmailVerificationLink(
+      input.email,
+      loginRedirectUrl,
+    );
     if (error) {
       setError(error);
     }
     toast.success("Verification link sent successfully.");
   }
-
   return (
     <div className="flex size-full min-h-dvh flex-col justify-center p-4">
       <Card className="mx-auto w-full max-w-md">
@@ -104,7 +112,7 @@ export default function EmailVerificationForm({ email }: { email: string }) {
           <CardFooter
             className={cn(
               "text-xs text-muted-foreground",
-              isRefetching ? "visible" : "invisible"
+              isRefetching ? "visible" : "invisible",
             )}
           >
             <LoaderIcon className="mr-2 size-4 animate-spin" /> checking for

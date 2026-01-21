@@ -113,19 +113,21 @@ enum Gender {
 //////////////////////
 
 model User {
-  id                      String                   @id @default(uuid())
-  email                   String                   @unique
-  name                    String
-  username                String                   @unique
-  avatarUrl               String?
-  role                    Role                     @default(OTHER)
-  createdAt               DateTime                 @default(now())
-  passwordHash            String?
-  isVerified              Boolean?                 @default(false)
-  emailVerificationTokens EmailVerificationToken[]
+  id            String   @id @default(uuid())
+  email         String   @unique
+  name          String
+  username      String   @unique
+  avatarUrl     String?
+  role          Role     @default(OTHER)
+  createdAt     DateTime @default(now())
+  passwordHash  String?
+  isVerified    Boolean? @default(false)
+  isWelcomed    Boolean? @default(false)
+  emailVerified Boolean  @default(false)
 
-  logs     AuditLog[]
-  sessions Session[]
+  emailVerificationTokens EmailVerificationToken[]
+  logs                    AuditLog[]
+  sessions                Session[]
 }
 
 model EmailVerificationToken {

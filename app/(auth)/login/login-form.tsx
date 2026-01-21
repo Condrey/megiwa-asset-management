@@ -87,6 +87,7 @@ export default function LoginForm() {
           Log in
         </LoadingButton>
         <Link
+          // eslint-disable-next-line react-hooks/incompatible-library
           href={`/forgot-password/${form.watch("username")}?user=manager`}
           className="block text-center underline group/link hover:text-primary"
         >

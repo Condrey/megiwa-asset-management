@@ -1,5 +1,6 @@
 "use server";
 
+import { REDIRECT_TO_URL_SEARCH_PARAMS } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { loginSchema, LoginSchema } from "@/lib/validations";
 import { verify } from "@node-rs/argon2";
@@ -9,7 +10,7 @@ import { generateSessionToken, setSessionTokenCookie } from "../lib/tokens";
 
 export async function loginAction(
   credentials: LoginSchema,
-  loginRedirectUrl: string
+  loginRedirectUrl: string,
 ): Promise<{ error: string }> {
   const { username, password } = loginSchema.parse(credentials);
 
@@ -54,6 +55,6 @@ export async function loginAction(
   return redirect(
     existingUser.isVerified
       ? loginRedirectUrl
-      : `/user-verification/${existingUser.id}`
+      : `/user-verification/${existingUser.id}?${REDIRECT_TO_URL_SEARCH_PARAMS}=${encodeURIComponent(loginRedirectUrl)}`,
   );
 }

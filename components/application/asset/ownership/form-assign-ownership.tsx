@@ -33,7 +33,7 @@ import { Asset } from "@/lib/generated/prisma/client";
 import { FamilyMemberData, OwnershipData } from "@/lib/types";
 import { createOwnershipSchema, OwnershipSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
+import { Building2Icon, PlusIcon } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AssetTypeBadge } from "../asset-badges";
@@ -61,7 +61,7 @@ export default function FormAssignOwnership({
 }: FormAssignOwnershipProps) {
   const { name, type } = asset;
   const [shouldWhitelist, setShouldWhiteList] = useState(
-    ownership ? false : !!familyMembers.length
+    ownership ? false : !!familyMembers.length,
   );
 
   const whiteListedFamilyMemberIds = assetOwnerships?.map((a) => a.memberId);
@@ -138,6 +138,7 @@ export default function FormAssignOwnership({
                 <EmptyContainer
                   title="There are no existing family member(s)."
                   description="Only family members can be chosen. In order to choose a member, first add a new family member since your database has no family members."
+                  icon={Building2Icon}
                   required
                 >
                   <ButtonAddEditFamilyMember>
@@ -192,7 +193,7 @@ export default function FormAssignOwnership({
                             : whiteListedFamilyMemberIds
                               ? familyMembers.filter(
                                   (f) =>
-                                    !whiteListedFamilyMemberIds.includes(f.id)
+                                    !whiteListedFamilyMemberIds.includes(f.id),
                                 )
                               : familyMembers
                         }

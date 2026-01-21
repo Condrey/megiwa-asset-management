@@ -11,7 +11,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -21,9 +20,8 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavLink, navLinks } from "@/lib/constants";
-import { cn, webName } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { ChevronRight, Loader2Icon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
@@ -38,20 +36,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       collapsible="icon"
       {...props}
     >
-      <SidebarHeader>
-        <SidebarMenu>
+      {/* <SidebarHeader className=" p-0">
+        <SidebarMenu className="">
           <SidebarMenuItem>
             <SidebarMenuButton className="flex flex-col  w-full  h-fit  data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground items-center justify-center rounded-lg bg-sidebar text-sidebar-foreground">
-              <div className="flex flex-col items-center aspect-square size-40  ">
-                <Image src={"/logo.png"} alt="logo" width={150} height={150} />
-                <span className="text-sm   uppercase tracking-tight">
-                  {webName}
-                </span>
+              <div className="flex flex-col items-center aspect-square size-full max-h-40 ">
+                <Image
+                  src={"/logo.png"}
+                  alt="logo"
+                  width={150}
+                  height={150}
+                  className="bg-cover size-full"
+                />
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarHeader>
+      </SidebarHeader> */}
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation Menu </SidebarGroupLabel>
@@ -59,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {navLinks.map((item, index) => {
               const ItemIcon = item.icon!;
               const isActive = item.children.some((i) =>
-                pathname.startsWith(i.href)
+                pathname.startsWith(i.href),
               );
               return (
                 <Collapsible
@@ -79,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         {item.icon && <ItemIcon />}
                         <span
                           className={cn(
-                            "line-clamp-1 text-ellipsis wrap-break-word"
+                            "line-clamp-1 text-ellipsis wrap-break-word",
                           )}
                         >
                           {item.title}
@@ -87,7 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <ChevronRight
                           className={cn(
                             "ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90",
-                            index === 0 && "hidden"
+                            index === 0 && "hidden",
                           )}
                         />
                         {/* </Link> */}

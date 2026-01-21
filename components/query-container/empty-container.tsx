@@ -7,15 +7,17 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
-import { MessageSquareMoreIcon } from "lucide-react";
+import { LucideIcon, MessageSquareMoreIcon } from "lucide-react";
 
 export function EmptyContainer({
   title,
   description,
   required = false,
+  icon: Icon = MessageSquareMoreIcon,
   children,
 }: {
   title: string;
+  icon?: LucideIcon;
   description?: string;
   required?: boolean;
   children?: React.ReactNode;
@@ -23,10 +25,10 @@ export function EmptyContainer({
   return (
     <Empty>
       <EmptyMedia variant={"icon"}>
-        <MessageSquareMoreIcon
+        <Icon
           className={cn(
             "size-20 fill-accent text-accent-foreground",
-            required && "animate-bounce fill-primary text-primary-foreground"
+            required && "animate-bounce fill-primary text-primary-foreground",
           )}
           strokeWidth={0.5}
         />

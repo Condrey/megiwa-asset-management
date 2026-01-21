@@ -25,6 +25,7 @@ export default function ButtonAddEditInheritanceEvent({
         {...props}
         onClick={() => setOpen(true)}
       />
+
       <FormAddEditInheritanceEvent
         asset={asset}
         open={open}

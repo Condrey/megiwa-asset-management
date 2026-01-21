@@ -6,7 +6,14 @@ import { TabsContent } from "@/components/ui/tabs";
 import { AssetData } from "@/lib/types";
 import { cn, formatPercentage } from "@/lib/utils";
 import { formatDate } from "date-fns";
-import { DotIcon, HistoryIcon, MapPinIcon, PlusIcon } from "lucide-react";
+import {
+  AlertTriangleIcon,
+  DotIcon,
+  HistoryIcon,
+  MapPinIcon,
+  PlusIcon,
+  User2Icon,
+} from "lucide-react";
 import { AssetLegalStatusBadge, AssetTypeBadge } from "../asset-badges";
 import ButtonAddEditInheritanceEvent from "../inheritance/inheritance-event/button-add-edit-inheritance-event";
 import { useInheritanceEventColumns } from "../inheritance/inheritance-event/columns";
@@ -68,8 +75,9 @@ export default function DetailsTab({ asset }: { asset: AssetData }) {
 
       {!ownerships.length ? (
         <EmptyContainer
-          title={`There are no ownerships for "${name}" yet!`}
-          description="Please assign an owner to this asset."
+          title="No owner assigned"
+          description={`There are no ownerships for "${name}" yet! Please assign an owner to this asset.`}
+          icon={User2Icon}
           required
         >
           <ButtonAssignOwnership asset={asset}>
@@ -91,7 +99,7 @@ export default function DetailsTab({ asset }: { asset: AssetData }) {
                 <CardTitle
                   className={cn(
                     "text-xl sm:text-2xl slashed-zero font-mono tabular-nums oldstyle-nums",
-                    allShares >= 100 && "text-success"
+                    allShares >= 100 && "text-success",
                   )}
                 >
                   {formatPercentage(allShares / 100)}
@@ -124,14 +132,22 @@ export default function DetailsTab({ asset }: { asset: AssetData }) {
         )}
       </TypographyH2>
       {!inheritanceEvents.length ? (
-        <EmptyContainer
-          title={`There are no events of inheritance for "${name}" yet!`}
-          description="In a scenario where an inheritance event is to occur, add it from here."
-        >
-          <ButtonAddEditInheritanceEvent asset={asset}>
-            Create an event
-          </ButtonAddEditInheritanceEvent>
-        </EmptyContainer>
+        !ownerships.length ? (
+          <EmptyContainer
+            title="Missing an ownership "
+            description={`First assign owners to ${name} before creating an inheritance event.`}
+            icon={AlertTriangleIcon}
+          />
+        ) : (
+          <EmptyContainer
+            title={`There are no events of inheritance for "${name}" yet!`}
+            description="In a scenario where an inheritance event is to occur, add it from here."
+          >
+            <ButtonAddEditInheritanceEvent asset={asset}>
+              Create an event
+            </ButtonAddEditInheritanceEvent>
+          </EmptyContainer>
+        )
       ) : (
         <DataTable
           data={inheritanceEvents}

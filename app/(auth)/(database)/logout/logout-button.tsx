@@ -33,7 +33,7 @@ export default function LogoutButton({
   async function logOutClicked() {
     startTransition(async () => {
       queryClient.clear();
-      const response = await logout(redirectToUrl);
+      await logout(redirectToUrl);
     });
   }
   return (

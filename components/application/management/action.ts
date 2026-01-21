@@ -12,8 +12,8 @@ async function allManagers() {
 
 export const getAllManagers = cache(allManagers);
 
-export async function insertManager(
-  input: SignUpSchema
+export async function upsertManager(
+  input: SignUpSchema,
 ): Promise<string | UserDataSelect> {
   const { email, name, password, role, username } = signUpSchema.parse(input);
   // apply auth
@@ -47,8 +47,10 @@ export async function insertManager(
     return "Email is already taken or has been used to register before.";
   }
 
-  return await prisma.user.create({
-    data: { email, name, passwordHash, role, username },
+  return await prisma.user.upsert({
+    where: { email },
+    create: { email, name, passwordHash, role, username },
+    update: { email, name, passwordHash, role, username },
     select: userDataSelect,
   });
 }
