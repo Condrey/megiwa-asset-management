@@ -1,14 +1,14 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { signUpSchema, SignUpValues } from "@/lib/validation";
+import { signUpSchema, SignUpSchema } from "@/lib/validations";
 import { hash } from "@node-rs/argon2";
 import { redirect } from "next/navigation";
 import { createSession } from "../../lib/session";
 import { generateSessionToken, setSessionTokenCookie } from "../../lib/tokens";
 
 export async function signUp(
-  credentials: SignUpValues,
+  credentials: SignUpSchema,
 ): Promise<{ error: string }> {
   const { username, email, password } = signUpSchema.parse(credentials);
   const passwordHash = await hash(password, {

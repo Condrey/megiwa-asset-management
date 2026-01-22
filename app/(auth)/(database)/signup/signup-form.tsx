@@ -12,11 +12,12 @@ import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/ui/loading-button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
-import { signUpSchema, SignUpValues } from "@/lib/validation";
+import { Role } from "@/lib/generated/prisma/enums";
+import { signUpSchema, SignUpSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MoveRightIcon } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Agreement from "../agreement";
@@ -25,18 +26,19 @@ import { signUp } from "./actions";
 export default function SignUpForm() {
   const { getNavigationLinkWithPathnameWithoutUpdate } =
     useCustomSearchParams();
-  const [error, setError] = useState<string>();
   const [isPending, startTransition] = useTransition();
-  const form = useForm<SignUpValues>({
+  const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
     values: {
       username: "",
       email: "",
       password: "",
+      name: "",
+      role: Role.OTHER,
     },
   });
 
-  async function onSubmit(values: SignUpValues) {
+  async function onSubmit(values: SignUpSchema) {
     startTransition(async () => {
       const { error } = await signUp(values);
       if (error)
