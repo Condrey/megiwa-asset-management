@@ -1,4 +1,4 @@
-import { LuciaSession } from "./session";
+import { LuciaSession } from "./types";
 
 export function generateSecureRandomString(): string {
   // Human readable alphabet (a-z, 0-9 without l, o, 0, 1 to avoid confusion)
