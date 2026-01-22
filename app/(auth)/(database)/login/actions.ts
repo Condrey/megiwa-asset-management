@@ -5,8 +5,8 @@ import prisma from "@/lib/prisma";
 import { loginSchema, LoginSchema } from "@/lib/validations";
 import { verify } from "@node-rs/argon2";
 import { redirect } from "next/navigation";
-import { createSession } from "../lib/session";
-import { generateSessionToken, setSessionTokenCookie } from "../lib/tokens";
+import { createSession } from "../../lib/session";
+import { generateSessionToken, setSessionTokenCookie } from "../../lib/tokens";
 
 export async function loginAction(
   credentials: LoginSchema,

@@ -25,8 +25,8 @@ import { REDIRECT_TO_URL_SEARCH_PARAMS } from "@/lib/constants";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useSession } from "../(auth)/auth/session-provider";
-import UserAvatar from "../(auth)/auth/user-avatar";
+import { useSession } from "../(auth)/session-provider";
+import UserAvatar from "../(auth)/user-avatar";
 
 export function NavUser() {
   const { isMobile } = useSidebar();

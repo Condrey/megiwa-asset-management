@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { verifyUserSchema, VerifyUserSchema } from "@/lib/validations";
 import { hash } from "@node-rs/argon2";
 import { redirect } from "next/navigation";
-import { generateEmailVerificationToken } from "../../email-verification/[token]/token";
+import { generateEmailVerificationToken } from "../email-verification/[token]/token";
 import { sendEmailVerificationLink } from "./email";
 
 export async function verifyUser({

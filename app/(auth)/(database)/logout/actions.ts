@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { validateRequest } from "../../auth/auth";
+import { validateRequest } from "../../auth";
 import { globalPOSTRateLimit } from "../../lib/request";
 import { invalidateSession } from "../../lib/session";
 

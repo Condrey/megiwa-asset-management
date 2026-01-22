@@ -1,7 +1,7 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { redirect } from "next/navigation";
-import { validateRequest } from "../(auth)/auth/auth";
-import SessionProvider from "../(auth)/auth/session-provider";
+import { validateRequest } from "../(auth)/auth";
+import SessionProvider from "../(auth)/session-provider";
 import { AppSidebar } from "./app-sidebar";
 import Footer from "./footer";
 import TopAppBar from "./top-app-bar";

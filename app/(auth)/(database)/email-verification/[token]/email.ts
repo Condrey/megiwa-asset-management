@@ -1,5 +1,5 @@
 import { webName } from "@/lib/utils";
-import { sendMail } from "../../(email)/nodemailer";
+import { sendMail } from "../../../(email)/nodemailer";
 
 export const sendWelcomeRemarksEmail = async ({
   email,

@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { sendEmailVerificationLink } from "../../user-verification/[userId]/email";
+import { sendEmailVerificationLink } from "../../[userId]/email";
 import { sendWelcomeRemarksEmail } from "./email";
 import { generateEmailVerificationToken } from "./token";
 

@@ -1,6 +1,6 @@
 import { GitHub, Google } from "arctic";
 import { cache } from "react";
-import { getCurrentSession } from "../lib/session";
+import { getCurrentSession } from "./lib/session";
 
 export const google = new Google(
   process.env.AUTH_GOOGLE_ID!,
