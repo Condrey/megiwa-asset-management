@@ -11,7 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/ui/loading-button";
 import { PasswordInput } from "@/components/ui/password-input";
-import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
 import { Role } from "@/lib/generated/prisma/enums";
 import { signUpSchema, SignUpSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,8 +23,6 @@ import Agreement from "../agreement";
 import { signUp } from "./actions";
 
 export default function SignUpForm() {
-  const { getNavigationLinkWithPathnameWithoutUpdate } =
-    useCustomSearchParams();
   const [isPending, startTransition] = useTransition();
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
@@ -110,7 +107,7 @@ export default function SignUpForm() {
       </Form>
       <Agreement className="text-center mb-6" />
       <Link
-        href={getNavigationLinkWithPathnameWithoutUpdate(`/login`)}
+        href={`/login`}
         className="block text-center group/link hover:text-primary"
       >
         <span className="underline">
