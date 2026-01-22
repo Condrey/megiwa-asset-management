@@ -1,6 +1,7 @@
 import { webName } from "@/lib/utils";
 import { Metadata } from "next";
 import SignUpForm from "./signup-form";
+
 export const metadata: Metadata = {
   title: "Self registration",
 };
@@ -17,7 +18,7 @@ export default function Page() {
             <SignUpForm />
           </div>
         </div>
-        <div className=" hidden w-3/5  md:block h-dvh bg-gradient-to-bl from-black dark:from-black/20 via-yellow-500 dark:via-yellow-500/20 to-red-500 dark:to-red-500/20 ">
+        <div className=" hidden w-3/5  md:block h-dvh bg-linear-to-bl from-black dark:from-black/20 via-yellow-500 dark:via-yellow-500/20 to-red-500 dark:to-red-500/20 ">
           <div className="   bg-cover mask-contain mask-no-repeat  h-dvh mask-[url(/uganda.png)] bg-[url(/hero.jpg)]" />
         </div>
         {/* <Image
