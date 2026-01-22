@@ -230,7 +230,7 @@ model Unit {
   rent    Float?
   status  PropertyStatus
 
-  asset  Asset   @relation(fields: [assetId], references: [id])
+  asset  Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
   leases Lease[]
 }
 
@@ -247,8 +247,8 @@ model Ownership {
   startDate     DateTime
   endDate       DateTime?
 
-  asset  Asset        @relation(fields: [assetId], references: [id])
-  member FamilyMember @relation(fields: [memberId], references: [id])
+  asset  Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  member FamilyMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 //////////////////////
@@ -274,8 +274,8 @@ model Lease {
   rent      Float
   createdAt DateTime  @default(now())
 
-  unit     Unit      @relation(fields: [unitId], references: [id])
-  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  unit     Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   invoices Invoice[]
 }
 
@@ -287,7 +287,7 @@ model Invoice {
   dueDate DateTime
   status  PaymentStatus
 
-  lease    Lease     @relation(fields: [leaseId], references: [id])
+  lease    Lease     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
   payments Payment[]
 }
 
@@ -299,7 +299,7 @@ model Payment {
   method    String?
   status    PaymentStatus
 
-  invoice Invoice @relation(fields: [invoiceId], references: [id])
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 //////////////////////
@@ -314,7 +314,7 @@ model Income {
   currency String     @default("UGX")
   date     DateTime   @default(now())
 
-  asset         Asset?               @relation(fields: [assetId], references: [id])
+  asset         Asset?               @relation(fields: [assetId], references: [id], onDelete: Cascade)
   distributions IncomeDistribution[]
 }
 
@@ -324,8 +324,8 @@ model IncomeDistribution {
   memberId String
   amount   Float
 
-  income Income       @relation(fields: [incomeId], references: [id])
-  member FamilyMember @relation(fields: [memberId], references: [id])
+  income Income       @relation(fields: [incomeId], references: [id], onDelete: Cascade)
+  member FamilyMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 model Expense {
@@ -337,7 +337,7 @@ model Expense {
   description String
   date        DateTime    @default(now())
 
-  asset Asset? @relation(fields: [assetId], references: [id])
+  asset Asset? @relation(fields: [assetId], references: [id], onDelete: SetNull)
 }
 
 //////////////////////
@@ -350,7 +350,7 @@ model Valuation {
   value    Float
   valuedOn DateTime
 
-  asset Asset @relation(fields: [assetId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 //////////////////////
@@ -364,8 +364,8 @@ model InheritanceEvent {
   eventDate  DateTime
   notes      String?
 
-  asset         Asset                    @relation(fields: [assetId], references: [id])
-  deceased      FamilyMember             @relation(fields: [deceasedId], references: [id])
+  asset         Asset                    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  deceased      FamilyMember             @relation(fields: [deceasedId], references: [id], onDelete: Cascade)
   beneficiaries InheritanceBeneficiary[]
 }
 
@@ -376,8 +376,8 @@ model InheritanceBeneficiary {
   share         Float
   previousShare Float
 
-  event  InheritanceEvent @relation(fields: [eventId], references: [id])
-  member FamilyMember     @relation(fields: [memberId], references: [id])
+  event  InheritanceEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  member FamilyMember     @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 //////////////////////
@@ -391,8 +391,8 @@ model Guardianship {
   startDate  DateTime
   endDate    DateTime?
 
-  ward     FamilyMember @relation("Ward", fields: [wardId], references: [id])
-  guardian FamilyMember @relation("Guardian", fields: [guardianId], references: [id])
+  ward     FamilyMember @relation("Ward", fields: [wardId], references: [id], onDelete: Cascade)
+  guardian FamilyMember @relation("Guardian", fields: [guardianId], references: [id], onDelete: Cascade)
 }
 
 //////////////////////
@@ -408,7 +408,7 @@ model LegalCase {
   closedOn DateTime?
   notes    String?
 
-  asset Asset? @relation(fields: [assetId], references: [id])
+  asset Asset? @relation(fields: [assetId], references: [id], onDelete: SetNull)
 }
 
 model GovernanceRule {
@@ -430,5 +430,5 @@ model Document {
   fileUrl   String
   createdAt DateTime     @default(now())
 
-  asset Asset? @relation(fields: [assetId], references: [id])
+  asset Asset? @relation(fields: [assetId], references: [id], onDelete: SetNull)
 }

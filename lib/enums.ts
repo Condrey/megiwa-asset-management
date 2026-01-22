@@ -58,6 +58,7 @@ export const assetTypes: Record<
   },
 };
 
+export const allLegalStatuses = Object.values(AssetLegalStatus);
 export const assetLegalStatuses: Record<
   AssetLegalStatus,
   {

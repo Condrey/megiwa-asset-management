@@ -1,3 +1,5 @@
+"server-only";
+
 import prisma from "@/lib/prisma";
 import { addMilliseconds } from "date-fns";
 import { cookies } from "next/headers";

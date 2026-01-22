@@ -1,5 +1,11 @@
 import z from "zod";
-import { Gender, PropertyStatus, Role } from "./generated/prisma/enums";
+import {
+  AssetLegalStatus,
+  AssetType,
+  Gender,
+  PropertyStatus,
+  Role,
+} from "./generated/prisma/enums";
 const requiredString = z.string().trim();
 
 // Signup
@@ -24,7 +30,7 @@ export type SignUpSchema = z.infer<typeof signUpSchema>;
 export const loginSchema = z.object({
   username: requiredString.min(
     1,
-    "Please input your username or email that you registered with."
+    "Please input your username or email that you registered with.",
   ),
   password: requiredString
     .min(1, "Password is required to login")
@@ -36,7 +42,7 @@ export const verifyUserSchema = z.object({
   name: requiredString
     .min(1, "Name must be provided.")
     .transform((val) =>
-      val.trim().replace(/\b\w/g, (char) => char.toUpperCase())
+      val.trim().replace(/\b\w/g, (char) => char.toUpperCase()),
     ),
   id: requiredString.min(1, "User id is missing"),
   username: requiredString
@@ -55,7 +61,7 @@ export const familyMemberSchema = z.object({
   id: z.string().optional().describe("a random UUIDv4"),
   fullName: requiredString.min(
     1,
-    "Your name can not be empty, please add a value"
+    "Your name can not be empty, please add a value",
   ),
   contact: z.string().optional().nullable(),
   email: z.email().optional().nullable(),
@@ -72,7 +78,7 @@ export const ownershipSchema = z.object({
   id: z.string().optional().describe("a random UUIDv4"),
   assetId: requiredString.min(
     1,
-    "Please make sure an asset is chosen before assigning an owner"
+    "Please make sure an asset is chosen before assigning an owner",
   ),
   memberId: requiredString.min(1, "Please choose a member"),
   share: z.number({ error: "Enter a valid percentage" }),
@@ -84,7 +90,7 @@ export const createOwnershipSchema = (maxShare: number) =>
     id: z.string().optional().describe("a random UUIDv4"),
     assetId: requiredString.min(
       1,
-      "Please make sure an asset is chosen before assigning an owner"
+      "Please make sure an asset is chosen before assigning an owner",
     ),
     memberId: requiredString.min(1, "Please choose a member"),
     // enforce 0 <= share <= maxShare
@@ -107,7 +113,7 @@ export const inheritanceEventSchema = z.object({
   id: z.string().optional().describe("a random UUIDv4"),
   assetId: requiredString.min(
     1,
-    "Please make sure an asset is chosen before assigning an owner"
+    "Please make sure an asset is chosen before assigning an owner",
   ),
   deceasedId: requiredString.min(1, "Please select a deceased member"),
   eventDate: z.date({ error: "Please enter an event date." }),
@@ -152,7 +158,7 @@ export const unitSchema = z.object({
   id: z.string().optional().describe("a random UUIDv4"),
   assetId: requiredString.min(
     1,
-    "Please make sure an asset is chosen before assigning an owner"
+    "Please make sure an asset is chosen before assigning an owner",
   ),
   name: requiredString.min(1, "Please provide a name to the unit"),
   rent: z.number({ error: "How much is the rent?" }).optional(),
@@ -165,12 +171,36 @@ export const valuationSchema = z.object({
   id: z.string().optional().describe("a random UUIDv4"),
   assetId: requiredString.min(
     1,
-    "Please make sure an asset is chosen before assigning an owner"
+    "Please make sure an asset is chosen before assigning an owner",
   ),
   value: z.number({ error: "Please include a value" }),
   valuedOn: z.date({ error: "Please provide a date of value addition" }),
 });
 export type ValuationSchema = z.infer<typeof valuationSchema>;
+
+// Asset
+export const assetSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  name: requiredString.min(1, "Please provide an asset name"),
+  location: requiredString.min(1, "Please provide an asset location"),
+  type: z.enum(AssetType, { error: "Please choose an asset type" }),
+  size: z
+    .string({ error: "Please provide an asset size" })
+    .optional()
+    .nullable(),
+  legalStatus: z.enum(AssetLegalStatus, {
+    error: "Please choose a legal status",
+  }),
+  retiredAt: z
+    .date({ error: "Please provide a date of retirement" })
+    .optional()
+    .nullable(),
+  createdAt: z
+    .date({ error: "Please provide a date of creation" })
+    .optional()
+    .nullable(),
+});
+export type AssetSchema = z.infer<typeof assetSchema>;
 
 // miscellaneous
 export const emailSchema = z.object({ email: z.string().trim().email() });

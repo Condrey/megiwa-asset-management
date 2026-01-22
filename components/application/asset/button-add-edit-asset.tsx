@@ -1,18 +1,18 @@
 "use client";
 
 import { Button, ButtonProps } from "@/components/ui/button";
-import { Asset } from "@/lib/generated/prisma/client";
-import { ValuationData } from "@/lib/types";
+import { AssetType } from "@/lib/generated/prisma/enums";
+import { AssetData } from "@/lib/types";
 import { useState } from "react";
-import FormAddEditValuation from "./form-add-edit-valuation";
+import FormAddEditAsset from "./form-add-edit-asset";
 
 interface Props extends ButtonProps {
-  asset: Asset;
-  valuation?: ValuationData;
+  asset?: AssetData;
+  assetType?: AssetType;
 }
-export default function ButtonAddEditValuation({
+export default function ButtonAddEditAsset({
   asset,
-  valuation,
+  assetType,
   ...props
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -20,15 +20,15 @@ export default function ButtonAddEditValuation({
   return (
     <>
       <Button
-        title={valuation ? "Update valuation" : "Create a valuation"}
+        title={asset ? "Update asset" : "Create asset"}
         {...props}
         onClick={() => setOpen(true)}
       />
-      <FormAddEditValuation
+      <FormAddEditAsset
         asset={asset}
-        valuation={valuation}
         open={open}
         onOpenChange={setOpen}
+        assetType={assetType}
       />
     </>
   );

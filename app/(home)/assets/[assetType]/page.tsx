@@ -1,10 +1,10 @@
 import { getAssetsByType } from "@/components/application/asset/action";
-import AssetItem from "@/components/application/asset/asset-item";
 import Container from "@/components/container";
 import { TypographyH1 } from "@/components/headings";
 import { assetTypes } from "@/lib/enums";
 import { AssetType } from "@/lib/generated/prisma/enums";
 import { Metadata } from "next";
+import PageClient from "./page-client";
 
 interface Props {
   params: Promise<{ assetType: string }>;
@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const type = decodeURIComponent(assetType) as AssetType;
   const { title } = assetTypes[type];
   return {
-    title: `${title} - Assets`,
+    title: `${title}s - Assets`,
   };
 }
 
@@ -24,7 +24,6 @@ export default async function Page({ params }: Props) {
   const type = decodeURIComponent(assetType) as AssetType;
   const assets = await getAssetsByType(type);
   const { title } = assetTypes[type];
-  const count = assets.length;
 
   return (
     <Container
@@ -35,12 +34,7 @@ export default async function Page({ params }: Props) {
       ]}
     >
       <TypographyH1 text={title + "s"} className="uppercase" />
-      <p>{`${count} ${title}${count === 1 ? "" : "s"}`}</p>
-      <div className="grid sm:grid-cols-2 gap-6">
-        {assets.map((asset, index) => (
-          <AssetItem key={index} asset={asset} />
-        ))}
-      </div>
+      <PageClient assets={assets} assetType={type} />
     </Container>
   );
 }

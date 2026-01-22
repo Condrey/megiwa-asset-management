@@ -39,7 +39,7 @@ export default function AssetItem({ asset }: { asset: Asset }) {
           "--item-color": color1,
         } as React.CSSProperties
       }
-      className="bg-linear-to-br from-(--item-color)/10 hover:from-muted hover:text-muted-foreground hover:shadow-lg"
+      className="bg-linear-to-br even:bg-linear-to-bl from-(--item-color)/10 hover:from-muted hover:text-muted-foreground hover:shadow-lg"
       onClick={() => startTransition(() => {})}
       asChild
     >
