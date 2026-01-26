@@ -9,21 +9,25 @@ import {
 import { cn } from "@/lib/utils";
 import { LucideIcon, MessageSquareMoreIcon } from "lucide-react";
 
-export function EmptyContainer({
-  title,
-  description,
-  required = false,
-  icon: Icon = MessageSquareMoreIcon,
-  children,
-}: {
+interface Props {
   title: string;
   icon?: LucideIcon;
   description?: string;
   required?: boolean;
   children?: React.ReactNode;
-}) {
+  className?: string;
+}
+
+export function EmptyContainer({
+  title,
+  description,
+  required = false,
+  icon: Icon = MessageSquareMoreIcon,
+  className,
+  children,
+}: Props) {
   return (
-    <Empty>
+    <Empty className={cn("", className)}>
       <EmptyMedia variant={"icon"}>
         <Icon
           className={cn(

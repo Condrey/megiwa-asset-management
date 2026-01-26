@@ -17,41 +17,40 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Asset } from "@/lib/generated/prisma/client";
-import { UnitData } from "@/lib/types";
-import { UnitSchema, unitSchema } from "@/lib/validations";
+import { Lease } from "@/lib/generated/prisma/client";
+import { InvoiceData } from "@/lib/types";
+import { InvoiceSchema, invoiceSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
-import FieldPropertyStatus from "./field-property-status";
-import { useUpsertUnitMutation } from "./mutations";
+import FieldDueDate from "./field-due-date";
+import { useUpsertInvoiceMutation } from "./mutations";
 
 interface Props {
-  unit?: UnitData;
-  asset: Asset;
+  invoice?: InvoiceData;
+  lease: Lease;
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
 }
-export default function FormAddEditUnit({
-  unit,
+export default function FormAddEditInvoice({
+  invoice,
+  lease,
   open,
-  asset,
   onOpenChange,
 }: Props) {
-  const form = useForm<UnitSchema>({
-    resolver: zodResolver(unitSchema),
+  const form = useForm<InvoiceSchema>({
+    resolver: zodResolver(invoiceSchema),
     values: {
-      id: unit?.id || "",
-      assetId: unit?.assetId || asset.id || "",
-      name: unit?.name || "",
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      rent: unit?.rent!,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      status: unit?.status!,
+      id: invoice?.id || "",
+      amount: invoice?.amount || 0,
+      dueDate: invoice?.dueDate || lease.endDate!,
+      leaseId: invoice?.leaseId || lease.id || "",
+      period: invoice?.period || "",
+      status: invoice?.status || "PENDING",
     },
   });
-  const { mutate, isPending } = useUpsertUnitMutation();
-  function submitForm(input: UnitSchema) {
+  const { mutate, isPending } = useUpsertInvoiceMutation(lease.id);
+  function submitForm(input: InvoiceSchema) {
     mutate(input, {
       onSuccess: () => {
         form.reset();
@@ -67,44 +66,49 @@ export default function FormAddEditUnit({
       >
         <div className="max-w-7xl space-y-6 mx-auto w-full  ">
           <SheetHeader className="w-full">
-            <SheetTitle>{unit ? "Update" : "Create a new"} Unit</SheetTitle>
+            <SheetTitle>
+              {invoice ? "Update" : "Create a new"} Invoice
+            </SheetTitle>
           </SheetHeader>
           <Form {...form}>
-            <div className="space-y-6 p-3 w-fit md:w-lg lg:w-3xl">
+            {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+            <pre>{JSON.stringify(form.watch(), null, 2)}</pre> */}
+
+            <div className="space-y-6 p-3 w-fit md:w-md lg:w-lg">
               <FormField
                 control={form.control}
-                name="name"
+                name="period"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Unit name</FormLabel>
+                    <FormLabel required>Period</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Room 1" {...field} />
+                      <Input
+                        placeholder="Enter period"
+                        {...field}
+                        value={field.value!}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="flex gap-3 w-full *:flex-1 *:w-full flex-col md:flex-row items-center">
-                <FieldPropertyStatus form={form} />
-                <FormField
-                  control={form.control}
-                  name="rent"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Rent amount</FormLabel>
-                      <FormControl>
-                        <NumberInput
-                          placeholder="e.g., 30000"
-                          {...field}
-                          value={field.value!}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Total amount</FormLabel>
+                    <FormControl>
+                      <NumberInput
+                        placeholder="enter total amount"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FieldDueDate form={form} />
               <FormFooter className="mt-6">
                 <Button
                   onClick={() => form.reset()}
@@ -120,7 +124,7 @@ export default function FormAddEditUnit({
                   size={"lg"}
                   onClick={() => form.handleSubmit(submitForm)()}
                 >
-                  {unit ? "Update unit" : "Create unit"}
+                  {invoice ? "Update invoice" : "Create invoice"}
                 </LoadingButton>
               </FormFooter>
             </div>

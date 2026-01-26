@@ -1,5 +1,4 @@
-import { cn } from "@/lib/utils";
-import { formatDuration, intervalToDuration } from "date-fns";
+import { calculateDuration, cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -15,19 +14,13 @@ export default function PossessionDuration({
   endDate,
   className,
 }: Props) {
-  const calculateDuration = () =>
-    formatDuration(
-      intervalToDuration({
-        start: startDate,
-        end: endDate ?? new Date(),
-      })
-    );
-
-  const [duration, setDuration] = useState<string>(calculateDuration);
+  const [duration, setDuration] = useState<string>(
+    calculateDuration({ startDate, endDate }),
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDuration(calculateDuration());
+      setDuration(calculateDuration({ startDate, endDate }));
     }, INTERVAL_DURATION);
 
     return () => clearInterval(interval);

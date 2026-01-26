@@ -12,6 +12,11 @@ async function allManagers() {
 
 export const getAllManagers = cache(allManagers);
 
+async function managerById(id: string) {
+  return await prisma.user.findFirst({ where: { id }, select: userDataSelect });
+}
+export const getManagerById = cache(managerById);
+
 export async function upsertManager(
   input: SignUpSchema,
 ): Promise<string | UserDataSelect> {

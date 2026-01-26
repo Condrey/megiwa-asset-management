@@ -59,6 +59,7 @@ export default function FieldDateOfDeath({ form }: Props) {
                 captionLayout="dropdown"
                 onSelect={(date) => {
                   form.setValue("dateOfDeath", date!);
+                  form.clearErrors("dateOfDeath");
                   setOpen(false);
                 }}
               />

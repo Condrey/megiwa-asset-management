@@ -71,7 +71,7 @@ export default function FieldMother({ form }: Props) {
                     {field.value ? (
                       <ChosenFamilyMemberCommandItem
                         familyMember={mothers.find(
-                          (familyMember) => familyMember.id === field.value
+                          (familyMember) => familyMember.id === field.value,
                         )}
                       />
                     ) : (
@@ -97,6 +97,7 @@ export default function FieldMother({ form }: Props) {
                           onSelect={(currentValue) => {
                             console.log({ currentValue });
                             form.setValue("motherId", familyMember.id);
+                            form.clearErrors("motherId");
                             setOpen(false);
                           }}
                           disabled={familyMember.id === form.watch("fatherId")}

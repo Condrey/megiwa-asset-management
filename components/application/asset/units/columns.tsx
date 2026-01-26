@@ -1,13 +1,18 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
 import { propertyStatuses } from "@/lib/enums";
 import { UnitData } from "@/lib/types";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit3Icon } from "lucide-react";
+import { Edit3Icon, PlusIcon } from "lucide-react";
+import Link from "next/link";
 import ButtonAddEditUnit from "./button-add-edit-unit";
+import ButtonAddEditLease from "./lease/button-add-edit-lease";
 
 export const useUnitColumns: ColumnDef<UnitData>[] = [
   {
@@ -30,24 +35,20 @@ export const useUnitColumns: ColumnDef<UnitData>[] = [
   {
     accessorKey: "status",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Status"
-        className="text-center w-full"
-      />
+      <DataTableColumnHeader column={column} title="Unit status" className="" />
     ),
     cell({ row }) {
       const { status } = row.original;
       const { icon: Icon, title, variant } = propertyStatuses[status];
       return (
-        <div className="max-w-44 mx-auto w-full">
+        <div className="flex items-center gap-2 text-muted-foreground">
           <Badge
             variant={variant}
-            className="h-6 [&>svg]:size-4 w-full flex flex-row justify-around "
+            className="h-6 [&>svg]:size-4  flex flex-row justify-around "
           >
             <Icon />
-            {title}
           </Badge>
+          {title}
         </div>
       );
     },
@@ -88,12 +89,23 @@ export const useUnitColumns: ColumnDef<UnitData>[] = [
       <DataTableColumnHeader column={column} title="Actions" />
     ),
     cell: ({ row }) => {
-      const { asset } = row.original;
+      const { asset, id } = row.original;
+      const { getNavigationLinkWithPathnameWithoutUpdate } =
+        useCustomSearchParams();
+      const url = getNavigationLinkWithPathnameWithoutUpdate(
+        `/assets/${asset.type}/${asset.id}/unit/${id}`,
+      );
       return (
         <div className="flex  gap-2.5">
           <ButtonAddEditUnit asset={asset} unit={row.original} size={"icon-sm"}>
             <Edit3Icon />
           </ButtonAddEditUnit>
+          <ButtonAddEditLease unit={row.original}>
+            <PlusIcon /> Lease
+          </ButtonAddEditLease>
+          <Link href={url} className={buttonVariants()}>
+            View more
+          </Link>
         </div>
       );
     },

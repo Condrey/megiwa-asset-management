@@ -12,6 +12,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Spinner } from "@/components/ui/spinner";
+import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
 import { assetTypes } from "@/lib/enums";
 import { Asset } from "@/lib/generated/prisma/browser";
 import { getColorsFromText } from "@/lib/utils";
@@ -27,8 +28,12 @@ export default function AssetItem({ asset }: { asset: Asset }) {
   const { icon: AssetIcon } = assetTypes[type];
   const { color1 } = getColorsFromText(name);
   const iconClassName = "size-20 fill-(--item-color)/20 text-(--item-color)";
-  const href = `/assets/${type}/${id}`;
   const [isPending, startTransition] = useTransition();
+  const { getNavigationLinkWithPathnameWithoutUpdate } =
+    useCustomSearchParams();
+  const href = getNavigationLinkWithPathnameWithoutUpdate(
+    `/assets/${type}/${id}`,
+  );
 
   return (
     <Item
@@ -62,7 +67,6 @@ export default function AssetItem({ asset }: { asset: Asset }) {
         </ItemContent>
         <ItemHeader>
           <span>
-            {" "}
             <>
               {size && (
                 <span className="inline-block">

@@ -58,18 +58,18 @@ export const navLinks: NavLinkGroup[] = [
   },
   {
     title: "Users & Mg't",
-    href: "/management/all",
+    href: "/managements/",
     description: "View all staffs of Lira City council",
     icon: Users2Icon,
     children: [
       {
         title: "All users and managers",
-        href: "/management/all",
+        href: "/managements/",
         description: "",
       },
       ...allRoles.map((a) => {
         const { title } = roles[a];
-        return { title, href: `/management/${a}`, description: "" };
+        return { title, href: `/managements/${a}`, description: "" };
       }),
     ],
     showOnMediumScreen: true,

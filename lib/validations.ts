@@ -3,6 +3,7 @@ import {
   AssetLegalStatus,
   AssetType,
   Gender,
+  PaymentStatus,
   PropertyStatus,
   Role,
 } from "./generated/prisma/enums";
@@ -165,6 +166,51 @@ export const unitSchema = z.object({
   status: z.enum(PropertyStatus, { error: "Choose a property status" }),
 });
 export type UnitSchema = z.infer<typeof unitSchema>;
+
+// Lease
+export const leaseSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  unitId: requiredString.min(
+    1,
+    "Please make sure a unit is chosen before assigning a lease",
+  ),
+  tenantId: requiredString.min(1, "Please choose a tenant"),
+  rent: z.number({ error: "Please include a rent amount" }),
+  startDate: z.date({ error: "Please include a start date" }),
+  endDate: z.date().optional().nullable(),
+});
+export type LeaseSchema = z.infer<typeof leaseSchema>;
+
+// Tenant
+export const tenantSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  fullName: requiredString.min(1, "The name is required"),
+  contact: requiredString.min(1, "Tenant's contact is a must"),
+  email: z.string().optional().nullable(),
+});
+export type TenantSchema = z.infer<typeof tenantSchema>;
+
+// Invoice
+export const invoiceSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  leaseId: requiredString.min(1, "Please choose a lease"),
+  period: requiredString.min(1, "A period is needed"),
+  amount: z.number({ error: "Indicate the total amount" }),
+  dueDate: z.date({ error: "Include invoice due date" }),
+  status: z.enum(PaymentStatus, { error: "Select invoice payment status" }),
+});
+export type InvoiceSchema = z.infer<typeof invoiceSchema>;
+
+// Payment
+export const paymentSchema = z.object({
+  id: z.string().optional().describe("a random UUIDv4"),
+  invoiceId: requiredString.min(1, "Please choose a lease"),
+  method: z.string().optional().nullable(),
+  amount: z.number({ error: "Indicate amount being paid" }),
+  paidOn: z.date().optional().nullable(),
+  status: z.enum(PaymentStatus, { error: "Select invoice payment status" }),
+});
+export type PaymentSchema = z.infer<typeof paymentSchema>;
 
 // Valuation
 export const valuationSchema = z.object({

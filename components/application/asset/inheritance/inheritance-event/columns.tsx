@@ -103,7 +103,7 @@ export const useInheritanceEventColumns: ColumnDef<InheritanceEventData>[] = [
               <Badge
                 variant={notCurrentShareHolder ? "secondary" : "destructive"}
               >
-                {formatDate(startDate, "PPP")} to {formatDate(startDate, "PPP")}
+                {formatDate(startDate, "PPP")} - {formatDate(endDate, "PPP")}
               </Badge>
             )}
           </div>
@@ -132,7 +132,7 @@ export const useInheritanceEventColumns: ColumnDef<InheritanceEventData>[] = [
         .reduce((val, total) => val + total.share, 0);
       const eventShares = beneficiaries.reduce(
         (val, total) => val + total.share,
-        0
+        0,
       );
       const ownership = ownerships.find((d) => d.memberId === deceasedId);
 

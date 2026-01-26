@@ -119,7 +119,7 @@ function BornDate({ dateOfBirth }: { dateOfBirth: Date | null }) {
     <>
       {dateOfBirth && (
         <span className="flex-0 text-xs text-muted-foreground">
-          {`( Born: '${formatDate(dateOfBirth, "y").substring(2)})`}
+          {`( Born: '${formatDate(dateOfBirth, "y")})`}
         </span>
       )}
     </>

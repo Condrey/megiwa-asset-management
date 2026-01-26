@@ -1,5 +1,9 @@
-import { assetLegalStatuses, assetTypes } from "@/lib/enums";
-import { AssetLegalStatus, AssetType } from "@/lib/generated/prisma/enums";
+import { assetLegalStatuses, assetTypes, propertyStatuses } from "@/lib/enums";
+import {
+  AssetLegalStatus,
+  AssetType,
+  PropertyStatus,
+} from "@/lib/generated/prisma/enums";
 import { cn } from "@/lib/utils";
 import { Badge } from "../../ui/badge";
 
@@ -38,5 +42,28 @@ export function AssetLegalStatusBadge({
       <StatusIcon />
       {statusTitle}
     </Badge>
+  );
+}
+
+export function PropertyStatusBadge({
+  propertyStatus,
+  className,
+}: {
+  propertyStatus: PropertyStatus;
+  className?: string;
+}) {
+  const {
+    icon: StatusIcon,
+    title: statusTitle,
+    variant: statusVariant,
+  } = propertyStatuses[propertyStatus];
+
+  return (
+    <div className={cn("flex items-center text-lg gap-1.5", className)}>
+      <Badge variant={statusVariant}>
+        <StatusIcon />
+      </Badge>
+      {statusTitle}
+    </div>
   );
 }

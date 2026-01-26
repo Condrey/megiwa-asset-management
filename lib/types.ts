@@ -80,10 +80,43 @@ export type InheritanceEventData = Prisma.InheritanceEventGetPayload<{
   include: typeof inheritanceEventDataInclude;
 }>;
 
+// Tenants
+export const tenantDataInclude = {} satisfies Prisma.TenantInclude;
+export type TenantData = Prisma.TenantGetPayload<{
+  include: typeof tenantDataInclude;
+}>;
+
+// Invoices
+export const invoiceDataInclude = {
+  lease: true,
+  payments: true,
+} satisfies Prisma.InvoiceInclude;
+export type InvoiceData = Prisma.InvoiceGetPayload<{
+  include: typeof invoiceDataInclude;
+}>;
+
+// Leases
+export const leaseDataInclude = {
+  invoices: { include: invoiceDataInclude },
+  tenant: { include: tenantDataInclude },
+  unit: true,
+} satisfies Prisma.LeaseInclude;
+export type LeaseData = Prisma.LeaseGetPayload<{
+  include: typeof leaseDataInclude;
+}>;
+
+// Payments
+export const paymentDataInclude = {
+  invoice: true,
+} satisfies Prisma.PaymentInclude;
+export type PaymentData = Prisma.PaymentGetPayload<{
+  include: typeof paymentDataInclude;
+}>;
+
 // Units
 export const unitDataInclude = {
   asset: true,
-  leases: true,
+  leases: { include: leaseDataInclude },
 } satisfies Prisma.UnitInclude;
 export type UnitData = Prisma.UnitGetPayload<{
   include: typeof unitDataInclude;

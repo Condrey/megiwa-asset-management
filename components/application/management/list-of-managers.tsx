@@ -5,6 +5,7 @@ import { EmptyContainer } from "@/components/query-container/empty-container";
 import ErrorContainer from "@/components/query-container/error-container";
 import { UserDataSelect } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
+import { PlusIcon } from "lucide-react";
 import { getAllManagers } from "./action";
 import ButtonAddEditManager from "./button-add-edit-manager";
 import { useManagersColumns } from "./columns";
@@ -34,5 +35,16 @@ export function ListOfManagers({ initialData }: Props) {
       </EmptyContainer>
     );
   }
-  return <DataTable data={data} columns={useManagersColumns}></DataTable>;
+  return (
+    <DataTable
+      data={data}
+      columns={useManagersColumns}
+      filterColumn={{ id: "name" }}
+      className="w-full"
+    >
+      <ButtonAddEditManager>
+        <PlusIcon /> Manager
+      </ButtonAddEditManager>
+    </DataTable>
+  );
 }

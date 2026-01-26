@@ -20,6 +20,14 @@ async function allAssetUnits(assetId: string) {
 }
 export const getAllAssetUnits = cache(allAssetUnits);
 
+async function unitById(id: string) {
+  return await prisma.unit.findFirst({
+    where: { id },
+    include: unitDataInclude,
+  });
+}
+export const getUnitById = cache(unitById);
+
 export async function upsertUnit(input: UnitSchema) {
   const { id, assetId, name, status, rent } = unitSchema.parse(input);
   // apply auth

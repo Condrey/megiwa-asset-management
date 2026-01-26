@@ -12,25 +12,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { FamilyMemberSchema } from "@/lib/validations";
+import { LeaseSchema } from "@/lib/validations";
 import { formatDate } from "date-fns";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 interface Props {
-  form: UseFormReturn<FamilyMemberSchema>;
+  form: UseFormReturn<LeaseSchema>;
 }
-export default function FieldDateOfBirth({ form }: Props) {
+export default function FieldDateEnd({ form }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
     <FormField
       control={form.control}
-      name="dateOfBirth"
+      name="endDate"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Date of birth (DOB)</FormLabel>
+          <FormLabel>End Date</FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl>
@@ -41,22 +41,21 @@ export default function FieldDateOfBirth({ form }: Props) {
                   aria-expanded={open}
                   className="w-full justify-between font-normal"
                 >
-                  {field.value ? formatDate(field.value, "PPPP") : "Select DOB"}
+                  {field.value
+                    ? formatDate(field.value, "PPPP")
+                    : "Select date"}
                   <ChevronsUpDownIcon className="opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
+            <PopoverContent className="w-auto overflow-hidden p-0" align="end">
               <Calendar
                 mode="single"
                 selected={field.value!}
                 captionLayout="dropdown"
                 onSelect={(date) => {
-                  form.setValue("dateOfBirth", date!);
-                  form.clearErrors("dateOfBirth");
+                  form.setValue("endDate", date!);
+                  form.clearErrors("endDate");
                   setOpen(false);
                 }}
               />
