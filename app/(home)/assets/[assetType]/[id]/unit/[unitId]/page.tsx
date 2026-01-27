@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function Page({ params }: Props) {
   const { unitId: encodedUnitId } = await params;
+
   const unitId = decodeURIComponent(encodedUnitId);
 
   const unit = await getUnitById(unitId);

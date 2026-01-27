@@ -4,7 +4,7 @@ import DetailsTab from "@/components/application/asset/tabs/details-tab";
 import UnitsTab from "@/components/application/asset/tabs/units-tab";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
-import { assetTabTriggers } from "@/lib/constants";
+import { ASSET_SEARCH_PARAMETER, assetTabTriggers } from "@/lib/constants";
 import { AssetData } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -13,10 +13,9 @@ import FinancesTab from "./finance/finances-tab";
 import LegalCasesTab from "./legal-cases-tab";
 import { TabsCounter } from "./tabs-counter";
 
-const SEARCH_PARAMETER = "asset-params";
 export default function TabsStructure({ asset }: { asset: AssetData }) {
   const searchParams = useSearchParams();
-  const tabValue = searchParams.get(SEARCH_PARAMETER);
+  const tabValue = searchParams.get(ASSET_SEARCH_PARAMETER);
   const [tab, setTab] = useState<string>(tabValue || "details");
   const { updateSearchParamsAndNavigate } = useCustomSearchParams();
   return (
@@ -24,14 +23,14 @@ export default function TabsStructure({ asset }: { asset: AssetData }) {
       value={tab}
       onValueChange={(value) => {
         setTab(value);
-        updateSearchParamsAndNavigate(SEARCH_PARAMETER, value);
+        updateSearchParamsAndNavigate(ASSET_SEARCH_PARAMETER, value);
       }}
       className="space-y-6"
     >
       <TabsList className="h-fit py-2 px-3 w-full md:*:h-12">
         {assetTabTriggers.map((triggerValue) => (
           <TabsTrigger key={triggerValue} value={triggerValue}>
-            {triggerValue}
+            <span className="capitalize">{triggerValue}</span>
             {triggerValue === "units" ? (
               <TabsCounter count={asset.units.length} />
             ) : triggerValue === "legalCases" ? (

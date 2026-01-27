@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
-import { financeTabTriggers } from "@/lib/constants";
+import { FINANCE_SEARCH_PARAMETER, financeTabTriggers } from "@/lib/constants";
 import { AssetData } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -9,11 +9,10 @@ import ExpensesTab from "./expenses-tab";
 import IncomesTab from "./incomes-tab";
 import ValuationsTab from "./valuations-tab";
 
-const SEARCH_PARAMETER = "finance-params";
 export default function TabsStructure({ asset }: { asset: AssetData }) {
   const { expenses, incomes, valuations } = asset;
   const searchParams = useSearchParams();
-  const tabValue = searchParams.get(SEARCH_PARAMETER);
+  const tabValue = searchParams.get(FINANCE_SEARCH_PARAMETER);
   const [tab, setTab] = useState<string>(tabValue || "incomes");
   const { updateSearchParamsAndNavigate } = useCustomSearchParams();
 
@@ -22,7 +21,7 @@ export default function TabsStructure({ asset }: { asset: AssetData }) {
       value={tab}
       onValueChange={(value) => {
         setTab(value);
-        updateSearchParamsAndNavigate(SEARCH_PARAMETER, value);
+        updateSearchParamsAndNavigate(FINANCE_SEARCH_PARAMETER, value);
       }}
       className="space-y-6"
     >

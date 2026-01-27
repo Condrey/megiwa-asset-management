@@ -2,17 +2,24 @@ import ReactQueryProvider from "@/components/react-query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { organization, siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import { appBodyFont, geistMono } from "../lib/fonts";
 import "./globals.css";
 
+const { description, logo, name, url } = siteConfig;
 export const metadata: Metadata = {
   title: {
-    template: "%s | Ocira James Estates",
-    absolute: "Ocira James Estates",
+    template: `%s | ${organization}`,
+    absolute: `${organization} - ${name}`,
+    default: organization,
   },
-  description:
-    "Official site to manage properties of our Father Mr. James Ocira.",
+  description,
+  openGraph: {
+    url,
+    images: [logo],
+  },
+  applicationName: name,
 };
 
 export default function RootLayout({

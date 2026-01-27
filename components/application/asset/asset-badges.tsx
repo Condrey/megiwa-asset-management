@@ -38,10 +38,12 @@ export function AssetLegalStatusBadge({
   } = assetLegalStatuses[legalStatus];
 
   return (
-    <Badge variant={statusVariant} className={cn(className)}>
-      <StatusIcon />
+    <div className="flex items-center gap-1.5">
+      <Badge variant={statusVariant} className={cn(className)}>
+        <StatusIcon />
+      </Badge>
       {statusTitle}
-    </Badge>
+    </div>
   );
 }
 

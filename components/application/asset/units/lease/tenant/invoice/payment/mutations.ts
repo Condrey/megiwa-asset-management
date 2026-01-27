@@ -12,14 +12,17 @@ export function useUpsertPaymentMutation(leaseId: string) {
       const queryKey2: QueryKey = ["unit"];
       const queryKey3: QueryKey = ["leases", "unit"];
       const queryKey4: QueryKey = ["invoices", "lease", leaseId];
+      const queryKey5: QueryKey = ["payments", "invoice", variables.invoiceId];
       await queryClient.cancelQueries({ queryKey });
       await queryClient.cancelQueries({ queryKey: queryKey2 });
       await queryClient.cancelQueries({ queryKey: queryKey3 });
       await queryClient.cancelQueries({ queryKey: queryKey4 });
+      await queryClient.cancelQueries({ queryKey: queryKey5 });
       queryClient.invalidateQueries({ queryKey });
       queryClient.invalidateQueries({ queryKey: queryKey2 });
       queryClient.invalidateQueries({ queryKey: queryKey3 });
       queryClient.invalidateQueries({ queryKey: queryKey4 });
+      queryClient.invalidateQueries({ queryKey: queryKey5 });
       toast.success("success", {
         description: !variables.id ? "Payment added" : "Payment updated",
       });

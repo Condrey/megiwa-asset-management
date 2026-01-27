@@ -1,10 +1,9 @@
 "use client";
 
-import { PropertyStatusBadge } from "@/components/application/asset/asset-badges";
 import { getUnitById } from "@/components/application/asset/units/actions";
 import { ListOfLeases } from "@/components/application/asset/units/lease/list-of-leases";
 import Container from "@/components/container";
-import { TypographyH1, TypographyH2 } from "@/components/headings";
+import { TypographyH2 } from "@/components/headings";
 import { EmptyContainer } from "@/components/query-container/empty-container";
 import ErrorContainer from "@/components/query-container/error-container";
 import { assetTypes } from "@/lib/enums";
@@ -40,7 +39,6 @@ export default function PageClient({ unit: initialData }: Props) {
   const {
     name,
     rent,
-    status: propertyStatus,
     asset: { type: assetType, name: assetName, id: assetId },
     leases,
   } = unit;
@@ -56,15 +54,7 @@ export default function PageClient({ unit: initialData }: Props) {
         { title: `Unit: ${name}` },
       ]}
     >
-      <TypographyH1
-        text={assetName}
-        className="text-muted-foreground uppercase"
-      />
-      <TypographyH2 text={name} className="flex gap-3 flex-wrap">
-        <PropertyStatusBadge
-          propertyStatus={propertyStatus}
-          className="[&svg]:size-auto"
-        />
+      <TypographyH2 text={""} className="flex gap-3 flex-wrap">
         <span className="slashed-zero ms-auto font-mono">
           Base Price {formatCurrency(rent || 0)}
         </span>

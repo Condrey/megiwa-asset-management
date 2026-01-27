@@ -1,7 +1,10 @@
 "use client";
 
 import { getAssetById } from "@/components/application/asset/action";
-import { AssetLegalStatusBadge } from "@/components/application/asset/asset-badges";
+import {
+  AssetLegalStatusBadge,
+  AssetTypeBadge,
+} from "@/components/application/asset/asset-badges";
 import TabsStructure from "@/components/application/asset/tabs/tabs-structure";
 import Container from "@/components/container";
 import { TypographyH1 } from "@/components/headings";
@@ -37,13 +40,20 @@ export default function PageClient({
         { title: name },
       ]}
     >
-      <div className="flex gap-3">
-        <AssetLegalStatusBadge
-          className="[&>svg]:size-5 text-sm flex-wrap py-0"
-          legalStatus={legalStatus}
-        />
-        <TypographyH1 text={name} className="line-clamp-2" />
+      <div className="flex flex-col items-start">
+        <TypographyH1 text={name} className="line-clamp-2 uppercase" />
+        <div className="flex gap-3">
+          <AssetLegalStatusBadge
+            className="[&>svg]:size-5 text-sm flex-wrap py-0"
+            legalStatus={legalStatus}
+          />
+          <AssetTypeBadge
+            type={type}
+            className="[&>svg]:size-5 text-sm flex-wrap py-0"
+          />
+        </div>
       </div>
+
       {status === "error" ? (
         <ErrorContainer
           errorMessage="An error occurred while fetching asset"

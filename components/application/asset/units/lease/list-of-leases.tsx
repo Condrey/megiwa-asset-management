@@ -6,10 +6,10 @@ import ErrorContainer from "@/components/query-container/error-container";
 import { LeaseData, UnitData } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { MapPinIcon, PlusIcon } from "lucide-react";
+import { Suspense } from "react";
 import { getAllUnitLeases } from "./actions";
 import ButtonAddEditLease from "./button-add-edit-lease";
 import { useLeaseColumns } from "./columns";
-import { Suspense } from "react";
 interface Props {
   leases: LeaseData[];
   unit: UnitData;
@@ -66,7 +66,6 @@ export function ListOfLeases({ leases: initialData, unit }: Props) {
           <PlusIcon /> New
         </ButtonAddEditLease>
       </DataTable>
-      ss
     </Suspense>
   );
 }
