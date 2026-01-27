@@ -86,10 +86,25 @@ export type TenantData = Prisma.TenantGetPayload<{
   include: typeof tenantDataInclude;
 }>;
 
+// Payments
+export const paymentDataInclude = {
+  invoice: {
+    include: {
+      lease: true,
+      payments: true,
+    },
+  },
+} satisfies Prisma.PaymentInclude;
+export type PaymentData = Prisma.PaymentGetPayload<{
+  include: typeof paymentDataInclude;
+}>;
+
 // Invoices
 export const invoiceDataInclude = {
-  lease: true,
-  payments: true,
+  lease: { include: { unit: { include: { asset: true } } } },
+  payments: {
+    include: paymentDataInclude,
+  },
 } satisfies Prisma.InvoiceInclude;
 export type InvoiceData = Prisma.InvoiceGetPayload<{
   include: typeof invoiceDataInclude;
@@ -99,18 +114,10 @@ export type InvoiceData = Prisma.InvoiceGetPayload<{
 export const leaseDataInclude = {
   invoices: { include: invoiceDataInclude },
   tenant: { include: tenantDataInclude },
-  unit: true,
+  unit: { include: { asset: true } },
 } satisfies Prisma.LeaseInclude;
 export type LeaseData = Prisma.LeaseGetPayload<{
   include: typeof leaseDataInclude;
-}>;
-
-// Payments
-export const paymentDataInclude = {
-  invoice: true,
-} satisfies Prisma.PaymentInclude;
-export type PaymentData = Prisma.PaymentGetPayload<{
-  include: typeof paymentDataInclude;
 }>;
 
 // Units

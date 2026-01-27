@@ -6,7 +6,7 @@ import ErrorContainer from "@/components/query-container/error-container";
 import { InvoiceData, LeaseData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { PlusIcon } from "lucide-react";
+import { DotIcon, MapPinIcon, PlusIcon } from "lucide-react";
 import { getAllLeaseInvoices } from "./actions";
 import ButtonAddEditInvoice from "./button-add-edit-invoice";
 import { useInvoiceColumns } from "./columns";
@@ -21,7 +21,11 @@ export function ListOfInvoices({
   className,
 }: Props) {
   const {
-    unit: { name: unitName, rent: unitRent },
+    unit: {
+      name: unitName,
+      rent: unitRent,
+      asset: { name: assetName, location: assetLocation },
+    },
     tenant,
     startDate,
     endDate,
@@ -54,13 +58,16 @@ export function ListOfInvoices({
         <DataTable
           data={invoices}
           columns={useInvoiceColumns}
-          filterColumn={{ id: "tenant_fullName", label: "tenant name" }}
           className="w-full"
           tableHeaderSection={
             <div>
               <TypographyH3 text={`Invoices for the lease `} />
               <div className="flex ">
                 <span className="">{unitName}</span>
+                <DotIcon />
+                <span className="">{assetName}</span>
+                <MapPinIcon className="text-muted fill-muted-foreground" />
+                <span className=""> {assetLocation}</span>
               </div>
             </div>
           }

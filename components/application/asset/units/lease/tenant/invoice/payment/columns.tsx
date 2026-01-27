@@ -1,17 +1,13 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { InvoiceData } from "@/lib/types";
+import { PaymentData } from "@/lib/types";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit3Icon, PlusIcon } from "lucide-react";
-import { useState } from "react";
-import ButtonAddEditInvoice from "./button-add-edit-invoice";
-import ButtonAddEditPayment from "./payment/button-add-edit-invoice";
-import ButtonShowPayments from "./payment/button-show-payments";
+import { Edit3Icon } from "lucide-react";
+import ButtonAddEditPayment from "./button-add-edit-invoice";
 
-export const useInvoiceColumns: ColumnDef<InvoiceData>[] = [
+export const usePaymentColumns: ColumnDef<PaymentData>[] = [
   {
     id: "index",
     header: ({ column }) => (
@@ -36,23 +32,12 @@ export const useInvoiceColumns: ColumnDef<InvoiceData>[] = [
       <DataTableColumnHeader column={column} title="Actions" />
     ),
     cell: ({ row }) => {
-      const invoice = row.original;
-      const [open, setOpen] = useState(false);
+      const payment = row.original;
       return (
         <div className="flex  gap-2.5">
-          <ButtonAddEditInvoice
-            lease={invoice.lease}
-            size={"icon-sm"}
-            invoice={invoice}
-          >
+          <ButtonAddEditPayment invoice={payment.invoice} size={"icon-sm"}>
             <Edit3Icon />
-          </ButtonAddEditInvoice>
-          <ButtonAddEditPayment invoice={invoice} size={"sm"}>
-            <PlusIcon /> Pay
           </ButtonAddEditPayment>
-          <ButtonShowPayments invoice={invoice} size={"sm"}>
-            View more
-          </ButtonShowPayments>
         </div>
       );
     },

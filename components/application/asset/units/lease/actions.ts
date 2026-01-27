@@ -19,6 +19,14 @@ async function allUnitLeases(unitId: string) {
 }
 export const getAllUnitLeases = cache(allUnitLeases);
 
+async function leaseById(leaseId: string) {
+  return await prisma.lease.findFirst({
+    where: { id: leaseId },
+    include: leaseDataInclude,
+  });
+}
+export const getLeaseById = cache(leaseById);
+
 export async function upsertLease(input: LeaseSchema) {
   const { id, rent, startDate, tenantId, unitId, endDate } =
     leaseSchema.parse(input);

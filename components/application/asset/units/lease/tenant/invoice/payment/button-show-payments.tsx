@@ -4,29 +4,31 @@ import Container from "@/components/container";
 import { TypographyH2 } from "@/components/headings";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LeaseData } from "@/lib/types";
+import { InvoiceData } from "@/lib/types";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
-import ButtonAddEditInvoice from "./button-add-edit-invoice";
-import { ListOfInvoices } from "./list-of-invoices";
+import ButtonAddEditPayment from "./button-add-edit-invoice";
+import { ListOfPayments } from "./list-of-payments";
 
 interface Props extends ButtonProps {
-  lease: LeaseData;
+  invoice: InvoiceData;
 }
-export default function ButtonShowInvoices({ lease, ...props }: Props) {
+export default function ButtonShowPayments({ invoice, ...props }: Props) {
   const [open, setOpen] = useState(false);
   const {
-    invoices,
-    rent,
-    unit: { name: unitName, rent: unitRent },
-  } = lease;
+    lease: {
+      rent,
+      unit: { name: unitName, rent: unitRent },
+    },
+    payments,
+  } = invoice;
   const isSameRentAmount = unitRent === rent;
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
-          title={"Show invoices"}
+          title={"Show payments"}
           {...props}
           onClick={() => setOpen(true)}
         />
@@ -38,7 +40,7 @@ export default function ButtonShowInvoices({ lease, ...props }: Props) {
             className="flex gap-3 flex-wrap w-full justify-between"
           >
             <p className="slashed-zero font-mono space-x-2">
-              Lease price{" "}
+              Invoice price{" "}
               <span
                 className={cn(
                   !isSameRentAmount && "line-through text-muted-foreground",
@@ -52,11 +54,15 @@ export default function ButtonShowInvoices({ lease, ...props }: Props) {
                 </span>
               )}
             </p>
-            <ButtonAddEditInvoice lease={lease}>
-              <PlusIcon /> Invoice
-            </ButtonAddEditInvoice>
+            <ButtonAddEditPayment invoice={invoice}>
+              <PlusIcon /> Payment
+            </ButtonAddEditPayment>
           </TypographyH2>
-          <ListOfInvoices invoices={invoices} lease={lease} className="h-dvh" />
+          <ListOfPayments
+            invoice={invoice}
+            payments={payments}
+            className="h-dvh"
+          />
         </Container>
       </SheetContent>
     </Sheet>

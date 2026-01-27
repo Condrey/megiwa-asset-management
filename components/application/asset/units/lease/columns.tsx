@@ -2,6 +2,9 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { buttonVariants } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
 import { LeaseData } from "@/lib/types";
 import {
   calculateDuration,
@@ -18,10 +21,10 @@ import {
   Edit3Icon,
   PlusIcon,
 } from "lucide-react";
-import { useState } from "react";
+import Link from "next/link";
+import { useTransition } from "react";
 import ButtonAddEditLease from "./button-add-edit-lease";
 import { CommandItemTenant } from "./tenant/command-item-tenant";
-import ButtonShowInvoices from "./tenant/invoice/button-show-invoices";
 
 export const useLeaseColumns: ColumnDef<LeaseData>[] = [
   {
@@ -175,14 +178,30 @@ export const useLeaseColumns: ColumnDef<LeaseData>[] = [
       <DataTableColumnHeader column={column} title="Actions" />
     ),
     cell: ({ row }) => {
-      const lease = row.original;
-      const [open, setOpen] = useState(false);
+      const { id: leaseId, unitId, unit } = row.original;
+      const {
+        assetId,
+        asset: { type: assetType },
+      } = unit;
+      const { getNavigationLinkWithPathnameWithoutUpdate } =
+        useCustomSearchParams();
+      const url = getNavigationLinkWithPathnameWithoutUpdate(
+        `/assets/${assetType}/${assetId}/unit/${unitId}/lease/${leaseId}`,
+      );
+      const [isPending, startTransition] = useTransition();
       return (
         <div className="flex  gap-2.5">
-          <ButtonAddEditLease lease={lease} unit={lease.unit} size={"icon-sm"}>
+          <ButtonAddEditLease lease={row.original} unit={unit} size={"icon-sm"}>
             <Edit3Icon />
           </ButtonAddEditLease>
-          <ButtonShowInvoices lease={lease}>View more</ButtonShowInvoices>
+          <Link
+            href={url}
+            className={buttonVariants()}
+            onClick={() => startTransition(() => {})}
+          >
+            {isPending && <Spinner />}
+            View more
+          </Link>
         </div>
       );
     },
