@@ -5,6 +5,7 @@ import { DataTable } from "@/components/data-table/data-table";
 import { TabsContent } from "@/components/ui/tabs";
 import { AssetData } from "@/lib/types";
 import { PlusIcon } from "lucide-react";
+import { Suspense } from "react";
 import ButtonAddEditUnit from "../units/button-add-edit-unit";
 import { useUnitColumns } from "../units/columns";
 
@@ -30,13 +31,15 @@ export default function UnitsTab({ asset }: { asset: AssetData }) {
           <ButtonAddEditUnit asset={asset}>Create a unit</ButtonAddEditUnit>
         </EmptyContainer>
       ) : (
-        <DataTable
-          columns={useUnitColumns}
-          data={units}
-          filterColumn={{ id: "name", label: "unit name" }}
-          ROWS_PER_TABLE={10}
-          className="w-full"
-        ></DataTable>
+        <Suspense>
+          <DataTable
+            columns={useUnitColumns}
+            data={units}
+            filterColumn={{ id: "name", label: "unit name" }}
+            ROWS_PER_TABLE={10}
+            className="w-full"
+          ></DataTable>
+        </Suspense>
       )}
     </TabsContent>
   );

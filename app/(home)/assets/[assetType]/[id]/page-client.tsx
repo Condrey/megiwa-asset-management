@@ -10,6 +10,7 @@ import { assetTypes } from "@/lib/enums";
 import { AssetData } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 export default function PageClient({
   initialData,
@@ -49,7 +50,9 @@ export default function PageClient({
           query={query}
         />
       ) : (
-        <TabsStructure asset={data} />
+        <Suspense>
+          <TabsStructure asset={data} />
+        </Suspense>
       )}
     </Container>
   );

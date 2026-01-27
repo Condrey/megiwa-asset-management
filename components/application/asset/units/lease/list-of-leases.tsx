@@ -9,6 +9,7 @@ import { MapPinIcon, PlusIcon } from "lucide-react";
 import { getAllUnitLeases } from "./actions";
 import ButtonAddEditLease from "./button-add-edit-lease";
 import { useLeaseColumns } from "./columns";
+import { Suspense } from "react";
 interface Props {
   leases: LeaseData[];
   unit: UnitData;
@@ -44,25 +45,28 @@ export function ListOfLeases({ leases: initialData, unit }: Props) {
     );
   }
   return (
-    <DataTable
-      data={leases}
-      columns={useLeaseColumns}
-      filterColumn={{ id: "tenant_fullName", label: "tenant name" }}
-      className="w-full"
-      tableHeaderSection={
-        <div>
-          <TypographyH3 text={`Leases for unit "${unit.name}"`} />
-          <div className="flex ">
-            <span className="">{assetName}</span>
-            <MapPinIcon className="text-muted fill-muted-foreground" />
-            <span className=""> {assetLocation}</span>
+    <Suspense>
+      <DataTable
+        data={leases}
+        columns={useLeaseColumns}
+        filterColumn={{ id: "tenant_fullName", label: "tenant name" }}
+        className="w-full"
+        tableHeaderSection={
+          <div>
+            <TypographyH3 text={`Leases for unit "${unit.name}"`} />
+            <div className="flex ">
+              <span className="">{assetName}</span>
+              <MapPinIcon className="text-muted fill-muted-foreground" />
+              <span className=""> {assetLocation}</span>
+            </div>
           </div>
-        </div>
-      }
-    >
-      <ButtonAddEditLease unit={unit} size={"sm"}>
-        <PlusIcon /> New
-      </ButtonAddEditLease>
-    </DataTable>
+        }
+      >
+        <ButtonAddEditLease unit={unit} size={"sm"}>
+          <PlusIcon /> New
+        </ButtonAddEditLease>
+      </DataTable>
+      ss
+    </Suspense>
   );
 }

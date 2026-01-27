@@ -10,6 +10,7 @@ import { Asset } from "@/lib/generated/prisma/client";
 import { AssetType } from "@/lib/generated/prisma/enums";
 import { useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
+import { Suspense } from "react";
 
 interface Props {
   assets: Asset[];
@@ -52,11 +53,13 @@ export default function PageClient({ assets: initialData, assetType }: Props) {
           </ButtonAddEditAsset>
         </EmptyContainer>
       ) : (
-        <div className="grid sm:grid-cols-2 gap-6">
-          {assets.map((asset, index) => (
-            <AssetItem key={index} asset={asset} />
-          ))}
-        </div>
+        <Suspense>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {assets.map((asset, index) => (
+              <AssetItem key={index} asset={asset} />
+            ))}
+          </div>
+        </Suspense>
       )}
     </>
   );

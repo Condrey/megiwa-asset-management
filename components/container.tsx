@@ -1,5 +1,6 @@
 import { BreadcrumbItem as BreadcrumbType } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { Suspense } from "react";
 import { ResponsiveBreadcrumb } from "./responsive-breadcrumb";
 
 interface Props extends React.ComponentProps<"div"> {
@@ -17,11 +18,13 @@ export default function Container({
   return (
     <div className="size-full ">
       {!!breadcrumbs && (
-        <ResponsiveBreadcrumb
-          items={breadcrumbs}
-          ITEMS_TO_DISPLAY={ITEMS_TO_DISPLAY}
-          className="sticky top-0 bg-background "
-        />
+        <Suspense>
+          <ResponsiveBreadcrumb
+            items={breadcrumbs}
+            ITEMS_TO_DISPLAY={ITEMS_TO_DISPLAY}
+            className="sticky top-0 bg-background "
+          />
+        </Suspense>
       )}
       <div
         className={cn(
