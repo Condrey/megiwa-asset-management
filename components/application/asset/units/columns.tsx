@@ -2,15 +2,14 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { useCustomSearchParams } from "@/hooks/use-custom-search-param";
-import { propertyStatuses } from "@/lib/enums";
 import { UnitData } from "@/lib/types";
 import { cn, formatCurrency, formatNumber } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit3Icon, PlusIcon } from "lucide-react";
 import Link from "next/link";
+import { PropertyStatusBadge } from "../asset-badges";
 import ButtonAddEditUnit from "./button-add-edit-unit";
 import ButtonAddEditLease from "./lease/button-add-edit-lease";
 
@@ -39,18 +38,7 @@ export const useUnitColumns: ColumnDef<UnitData>[] = [
     ),
     cell({ row }) {
       const { status } = row.original;
-      const { icon: Icon, title, variant } = propertyStatuses[status];
-      return (
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Badge
-            variant={variant}
-            className="h-6 [&>svg]:size-4  flex flex-row justify-around "
-          >
-            <Icon />
-          </Badge>
-          {title}
-        </div>
-      );
+      return <PropertyStatusBadge propertyStatus={status} />;
     },
   },
   {

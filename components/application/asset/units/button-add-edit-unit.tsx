@@ -4,7 +4,7 @@ import { Button, ButtonProps } from "@/components/ui/button";
 import { Asset } from "@/lib/generated/prisma/client";
 import { UnitData } from "@/lib/types";
 import { useState } from "react";
-import FormEndUnit from "./form-add-edit-unit";
+import FormAddEditUnit from "./form-add-edit-unit";
 
 interface Props extends ButtonProps {
   asset: Asset;
@@ -20,7 +20,7 @@ export default function ButtonAddEditUnit({ asset, unit, ...props }: Props) {
         {...props}
         onClick={() => setOpen(true)}
       />
-      <FormEndUnit
+      <FormAddEditUnit
         asset={asset}
         unit={unit}
         open={open}
